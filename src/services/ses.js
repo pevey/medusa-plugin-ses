@@ -229,46 +229,6 @@ class SESService extends NotificationService {
     }
   }
   
-  async getSubject(event, eventData) {
-    switch (event) {
-      case "order.return_requested":
-        return 
-      case "swap.shipment_created":
-        return 
-      case "claim.shipment_created":
-        return
-      case "order.items_returned":
-        return 
-      case "swap.received":
-        return 
-      case "swap.created":
-        return 
-      case "gift_card.created":
-        return 
-      case "order.gift_card_created":
-        return 
-      case "order.placed":
-        return 
-      case "order.shipment_created":
-        return 
-      case "order.canceled":
-        return 
-      case "user.password_reset":
-        return 
-      case "customer.password_reset":
-        return 
-      case "restock-notification.restocked":
-        return await this.restockNotificationData(
-          eventData,
-          attachmentGenerator
-        )
-      case "order.refund_created":
-        return this.orderRefundCreatedData(eventData, attachmentGenerator)
-      default:
-        return {}
-    }
-  }
-
   async compileTemplate(templateId, data) {
     const base = path.resolve(__dirname, '../../', options.template_path, templateId)
 console.log(base)
