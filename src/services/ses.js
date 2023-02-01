@@ -328,7 +328,6 @@ console.log(sendOptions)
     .then(() => { status = "sent" })
     .catch((error) => { status = "failed"; console.log(error) })
 
-
     // We don't want heavy docs stored in DB
     delete sendOptions.attachments
 
@@ -351,35 +350,43 @@ console.log(sendOptions)
       return {
         content: a.base64,
         filename: a.name,
-        type: a.type,
-        disposition: "attachment",
-        contentId: a.name,
+        encoding: 'base64',
+        contentType: a.type
       }
     })
 
-    // const status = await SendGrid.send(sendOptions)
-    //   .then(() => "sent")
-    //   .catch(() => "failed")
+    //const status = await this.transporter_.sendMail(sendOptions).then(() => "sent").catch(() => "failed")
+    let status
+    await this.transporter_.sendMail(sendOptions)
+    .then(() => { status = "sent" })
+    .catch((error) => { status = "failed"; console.log(error) })
 
-    // return { to: sendOptions.to, status, data: sendOptions }
-    return {}
+    return { to: sendOptions.to, status, data: sendOptions }
   }
 
   /**
-   * Sends an email using SendGrid.
+   * Sends an email using SES.
    * @param {string} templateId - id of template in SendGrid
    * @param {string} from - sender of email
    * @param {string} to - receiver of email
    * @param {Object} data - data to send in mail (match with template)
    * @return {Promise} result of the send operation
    */
-  // async sendEmail(options) {
-  //   try {
-  //     return SendGrid.send(options)
-  //   } catch (error) {
-  //     throw error
-  //   }
-  // }
+  async sendEmail(options) {
+    const { subject, html, text } = await this.compileTemplate(options.templateId, options.data)
+    if (!subject || (!html && !text)) { return false }
+    try {
+      return this.transporter_.sendMail({
+        from: options.from,
+        to: options.to,
+        subject,
+        html,
+        text
+      })
+    } catch (error) {
+      throw error
+    }
+  }
 
   async orderShipmentCreatedData({ id, fulfillment_id }, attachmentGenerator) {
     const order = await this.orderService_.retrieve(id, {
