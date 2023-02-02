@@ -477,20 +477,26 @@ var SESService = /*#__PURE__*/function (_NotificationService) {
         return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
-              _context6.next = 2;
-              return this.compileTemplate(template_id, data);
+              if (!(this.options_.enable_endpoint !== '42')) {
+                _context6.next = 2;
+                break;
+              }
+              return _context6.abrupt("return", false);
             case 2:
+              _context6.next = 4;
+              return this.compileTemplate(template_id, data);
+            case 4:
               _yield$this$compileTe2 = _context6.sent;
               subject = _yield$this$compileTe2.subject;
               html = _yield$this$compileTe2.html;
               text = _yield$this$compileTe2.text;
               if (!(!subject || !html && !text)) {
-                _context6.next = 8;
+                _context6.next = 10;
                 break;
               }
               return _context6.abrupt("return", false);
-            case 8:
-              _context6.prev = 8;
+            case 10:
+              _context6.prev = 10;
               return _context6.abrupt("return", this.transporter_.sendMail({
                 from: from,
                 to: to,
@@ -498,15 +504,15 @@ var SESService = /*#__PURE__*/function (_NotificationService) {
                 html: html,
                 text: text
               }));
-            case 12:
-              _context6.prev = 12;
-              _context6.t0 = _context6["catch"](8);
+            case 14:
+              _context6.prev = 14;
+              _context6.t0 = _context6["catch"](10);
               throw _context6.t0;
-            case 15:
+            case 17:
             case "end":
               return _context6.stop();
           }
-        }, _callee6, this, [[8, 12]]);
+        }, _callee6, this, [[10, 14]]);
       }));
       function sendEmail(_x15, _x16, _x17, _x18) {
         return _sendEmail.apply(this, arguments);

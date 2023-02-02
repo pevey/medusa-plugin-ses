@@ -334,6 +334,15 @@ console.log(sendOptions)
    * @return {Promise} result of the send operation
    */
   async sendEmail(template_id, from, to, data) {
+    // This function is used by the /ses/send API endpoint included in this plugin.
+    // It is disabled by default.
+    // This endpoint may be useful for testing purposes and for use by related applications.
+    // There is NO SECURITY on the endpoint by default.
+    // Most people will NOT need to enable it.
+    // If you are certain that you want to enable it and that you know what you are doing,
+    // set the environment variable SES_ENABLE_ENDPOINT to "42" (a string, not an int).
+    // The unsual setting is meant to prevent enabling by accident or without thought.
+    if (this.options_.enable_endpoint !== '42') { return false }
     const { subject, html, text } = await this.compileTemplate(template_id, data)
     if (!subject || (!html && !text)) { return false }
     try {
