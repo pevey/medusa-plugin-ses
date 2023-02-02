@@ -25,7 +25,7 @@ var _default = function _default(app) {
     if (error) {
       throw new _medusaCoreUtils.MedusaError(_medusaCoreUtils.MedusaError.Types.INVALID_DATA, error.details);
     }
-    sesService.sendEmail(req.body.template_id, req.body.from, req.body.to, req.body.data).then(function (result) {
+    sesService.sendEmail(value.template_id, value.from, value.to, value.data).then(function (result) {
       return res.json({
         result: result
       });
