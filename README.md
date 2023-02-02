@@ -88,7 +88,7 @@ set the environment variable SES_ENABLE_ENDPOINT to "42" (string).
 The unsual setting is meant to prevent enabling by accident or without thought.
 To use the endpoint, POST a json req.body with: template_id, from, to, and data to /ses/send.
 Remember that the from email address must be a verified sender in your AWS console.
-Also remember that if your AWS account is still in sandbox mode, you can only SEND emails to verified sender email addresses, as well.
+Also remember that if your AWS account is still in sandbox mode, you can only SEND emails to verified sender email addresses.
 
 ## Acknowledgement
 

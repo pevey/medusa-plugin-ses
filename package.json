@@ -5,7 +5,7 @@
    "main": "index.js",
    "repository": {
       "type": "git",
-      "url": "https://github.com/laroastingco/medusa-plugin-ses"
+      "url": "https://github.com/pevey/medusa-plugin-ses"
    },
    "author": "Lacey Pevey",
    "license": "MIT",
