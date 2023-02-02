@@ -259,7 +259,6 @@ class SESService extends NotificationService {
       html,
       text
     }
-console.log(sendOptions)
 
     const attachments = await this.fetchAttachments(
       event,
