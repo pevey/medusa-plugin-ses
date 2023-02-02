@@ -5,11 +5,9 @@ Notifications plugin for Medusa ecommerce server that sends transactional emails
 ## Features
 
 - THERE ARE BREAKING CHANGES IF YOU ARE UPGRADING FROM 1.x to 2.0
-- --Uses the email templating features built into AWS SES-- Changed in version 2.0.  Templates are now stored locally.  See Configuration section below.
-- --AWS has no frontend for managing templates like Sendgrid does.  You must use the AWS CLI or a third party template manager.-- Changed in version 2.0.  Templates are now stored locally.  See Configuration section below.
-- --Refer to the AWS documentation at https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_CreateEmailTemplate.html.--
+- ~~Uses the email templating features built into AWS SES~~ Changed in version 2.0.  Templates are now stored locally.  See Configuration section below.
 - Templates are based on handlebars, so they are compatible with Sendgrid email templates
-- --This plugin does not currently handle email attachments of any sort.  If you have a plugin that adds pdf invoices or other attachments, they will not be sent via this plugin.  This may be added at a later time if the need is there.--  Support for attachments added in version 2.0.
+- ~~This plugin does not currently handle email attachments of any sort.  If you have a plugin that adds pdf invoices or other attachments, they will not be sent via this plugin.  This may be added at a later time if the need is there.~~  Support for attachments added in version 2.0.
 - An API endpoint for testing and potentially for use with other non-Medusa applications is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
 
 ## Configuration
