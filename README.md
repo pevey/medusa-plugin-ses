@@ -56,7 +56,7 @@ SES_TEMPLATE_PATH="/full/absolute/path/to/medusa-server/data/templates"
 
 - The SES_FROM email address must be a verified sender in your AWS account.
 
-- The template path must be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
+- The template path is the relative path from the medusa-server root folder.  For example, create a 'data/templates' folder and make 'data/templates' the SES_TEMPLATE_PATH variable.
 ```
 medusa-server  // root directory
 |-data

@@ -227,9 +227,9 @@ class SESService extends NotificationService {
   }
   
   async compileTemplate(templateId, data) {
-    //const base = path.resolve(__dirname, '../../', this.options_.template_path, templateId)
-    const base = path.resolve(this.options_.template_path, templateId)
-console.log(base)
+    const base = path.resolve(__dirname, '../../', this.options_.template_path, templateId)
+    // The absolute path below is useful when using yarn link or npm link
+    //const base = path.resolve(this.options_.template_path, templateId)
     const subjectTemplate = Handlebars.compile(fs.readFileSync(path.join(base, 'subject.hbs'), "utf8"))
     const htmlTemplate = Handlebars.compile(fs.readFileSync(path.join(base, 'html.hbs'), "utf8"))
     const textTemplate = Handlebars.compile(fs.readFileSync(path.join(base, 'text.hbs'), "utf8"))
