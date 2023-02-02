@@ -1,6 +1,9 @@
 .npmignore
 yarn.lock
 node_modules
-api
-services
-subscribers
+./api
+./migrations
+./models
+./repositories
+./services
+./subscribers
