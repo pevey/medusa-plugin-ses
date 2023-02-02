@@ -8,7 +8,7 @@ Notifications plugin for Medusa ecommerce server that sends transactional emails
 - ~~Uses the email templating features built into AWS SES~~ Changed in version 2.0.  Templates are now stored locally.  See Configuration section below.
 - Templates are based on handlebars, so they are compatible with Sendgrid email templates
 - ~~This plugin does not currently handle email attachments of any sort.  If you have a plugin that adds pdf invoices or other attachments, they will not be sent via this plugin.  This may be added at a later time if the need is there.~~  Support for attachments added in version 2.0.
-- An API endpoint for testing and potentially for use with other non-Medusa applications is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
+- An API endpoint for testing and that can be used with other (non-Medusa) applications is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
 
 ## Configuration
 
@@ -56,9 +56,7 @@ SES_TEMPLATE_PATH="/full/absolute/path/to/medusa-server/data/templates"
 
 - The SES_FROM email address must be a verified sender in your AWS account.
 
-- The sending rate is the max number of emails to send per second.  Messages beyond the max will by queued, up to a point.  The initial max sending rate for most AWS accounts when you are first moved out of the sandbox is 14.  You can set to higher or lower as desired.
-
-- The template path needs to be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
+- The template path must be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
 ```
 medusa-server  // root directory
 |-data
@@ -71,15 +69,13 @@ medusa-server  // root directory
                   |-subject.hbs
                   |-html.hbs
                   |-text.hbs
-            |- etc            
---
+            |- etc   
 ```
 
-When emails are sent, each of the three parts will be compiled. 
-- subject is required
-- either html or text is required, but one or the other can be blank.
-
-The template reference here explains the variables that can be used:
+    - When emails are sent, each of the three parts will be compiled. 
+        - subject is required
+        - either html or text is required, but one or the other can be blank.
+    - The template reference here explains the variables that can be used:
 https://docs.medusajs.com/add-plugins/sendgrid/#template-reference
 
 
