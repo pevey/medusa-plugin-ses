@@ -44,13 +44,10 @@ var SESService = /*#__PURE__*/function (_NotificationService) {
    *      access_key_id: process.env.SES_ACCESS_KEY_ID,
    *      secret_access_key: process.env.SES_SECRET_ACCESS_KEY,
    *      region: process.env.SES_REGION,
-   *      from: "Medusa <hello@medusa.example>",
-   *      template_path: "data/email_templates",
+   *      from: process.env.SES_FROM,
+   *      enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
+   *      template_path: process.env.SES_TEMPLATE_PATH,
    *      order_placed_template: 'order_placed',
-   *      order_updated_template: 56789,
-   *      order_canceled_template: 4242,
-   *      user_password_reset_template: 0000,
-   *      customer_password_reset_template: 1111,
    *    }
    */
   function SESService(_ref, options) {
