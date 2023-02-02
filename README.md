@@ -72,11 +72,10 @@ medusa-server  // root directory
             |- etc   
 ```
 
-    - When emails are sent, each of the three parts will be compiled. 
-        - subject is required
-        - either html or text is required, but one or the other can be blank.
-    - The template reference here explains the variables that can be used:
-https://docs.medusajs.com/add-plugins/sendgrid/#template-reference
+- When emails are sent, each of the three parts will be compiled. 
+* subject is required
+* either html or text is required, but one or the other can be blank.
+- The template reference here explains the variables that can be used: https://docs.medusajs.com/add-plugins/sendgrid/#template-reference
 
 
 - This plugin adds an endpoint at http://[server]/ses/send
