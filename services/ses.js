@@ -295,7 +295,7 @@ var SESService = /*#__PURE__*/function (_NotificationService) {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              base = _path["default"].resolve(__dirname, '../../', this.options_.template_path, templateId); // The absolute path below is useful when using yarn link or npm link
+              base = _path["default"].resolve(__dirname, '../../../', this.options_.template_path, templateId); // The absolute path below is useful when using yarn link or npm link
               //const base = path.resolve(this.options_.template_path, templateId)
               subjectTemplate = _handlebars["default"].compile(_fs["default"].readFileSync(_path["default"].join(base, 'subject.hbs'), "utf8"));
               htmlTemplate = _handlebars["default"].compile(_fs["default"].readFileSync(_path["default"].join(base, 'html.hbs'), "utf8"));
