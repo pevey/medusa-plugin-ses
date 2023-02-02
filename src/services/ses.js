@@ -1,4 +1,4 @@
-import { SESClient } from '@aws-sdk/client-ses'
+import * as aws from '@aws-sdk/client-ses'
 import Handlebars from 'handlebars'
 import nodemailer from 'nodemailer'
 import path from 'path'
@@ -55,7 +55,7 @@ class SESService extends NotificationService {
     this.totalsService_ = totalsService
     this.productVariantService_ = productVariantService
 
-    this.sesClient_ = new SESClient({
+    const ses = new aws.SES({
       region: options.region,
       credentials: {
         accessKeyId: options.access_key_id,
@@ -64,7 +64,7 @@ class SESService extends NotificationService {
     })
 
     this.transporter_ = nodemailer.createTransport({
-      SES: this.sesClient_,
+      SES: { ses, aws }
     })
   }
 
@@ -230,7 +230,8 @@ class SESService extends NotificationService {
   }
   
   async compileTemplate(templateId, data) {
-    const base = path.resolve(__dirname, '../../', options.template_path, templateId)
+    //const base = path.resolve(__dirname, '../../', this.options_.template_path, templateId)
+    const base = path.resolve(this.options_.template_path, templateId)
 console.log(base)
     const subjectTemplate = Handlebars.compile(fs.readFileSync(path.join(base, 'subject.hbs'), "utf8"))
     const htmlTemplate = Handlebars.compile(fs.readFileSync(path.join(base, 'html.hbs'), "utf8"))
@@ -326,19 +327,19 @@ console.log(sendOptions)
 
   /**
    * Sends an email using SES.
-   * @param {string} templateId - id of template in SendGrid
+   * @param {string} template_id - id of template to use
    * @param {string} from - sender of email
    * @param {string} to - receiver of email
    * @param {Object} data - data to send in mail (match with template)
    * @return {Promise} result of the send operation
    */
-  async sendEmail(options) {
-    const { subject, html, text } = await this.compileTemplate(options.templateId, options.data)
+  async sendEmail(template_id, from, to, data) {
+    const { subject, html, text } = await this.compileTemplate(template_id, data)
     if (!subject || (!html && !text)) { return false }
     try {
       return this.transporter_.sendMail({
-        from: options.from,
-        to: options.to,
+        from: from,
+        to: to,
         subject,
         html,
         text
