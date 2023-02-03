@@ -369,7 +369,6 @@ var SESService = /*#__PURE__*/function (_NotificationService) {
             case 20:
               attachments = _context4.sent;
               if (attachments !== null && attachments !== void 0 && attachments.length) {
-                sendOptions.has_attachments = true;
                 sendOptions.attachments = attachments.map(function (a) {
                   return {
                     content: a.base64,

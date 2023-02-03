@@ -267,7 +267,6 @@ class SESService extends NotificationService {
     )
 
     if (attachments?.length) {
-      sendOptions.has_attachments = true
       sendOptions.attachments = attachments.map((a) => {
         return {
           content: a.base64,
