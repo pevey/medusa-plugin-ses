@@ -242,12 +242,13 @@ class SESService extends NotificationService {
   async sendNotification(event, eventData, attachmentGenerator) {
     let templateId = this.getTemplateId(event)
     if (!templateId) { return false }
-    if (data.locale) {
-      templateId = this.getLocalizedTemplateId(event, data.locale) || templateId
-    }
 
     const data = await this.fetchData(event, eventData, attachmentGenerator)
     if (!data) { return false }
+
+    if (data.locale) {
+      templateId = this.getLocalizedTemplateId(event, data.locale) || templateId
+    }
 
     const { subject, html, text } = await this.compileTemplate(templateId, data)
     if (!subject || (!html && !text)) { return false }
