@@ -1,6 +1,7 @@
 import { Router } from "express"
 import bodyParser from "body-parser"
-import { Validator, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
+import {z } from "zod"
 
 const router = Router()
 
@@ -10,19 +11,19 @@ export default (app) => {
   router.post("/ses/send",(req, res) => {
     const sesService = req.scope.resolve("sesService")
 
-    const schema = Validator.object().keys({
-      template_id: Validator.string().required(),
-      from: Validator.string().required(),
-      to: Validator.string().required(),
-      data: Validator.object().optional().default({}),
+    const schema = z.object({
+      template_id: z.string().min(1),
+      from: z.string().min(1),
+      to: z.string().min(1),
+      data: z.object({}).required().default({}),
     })
-  
-    const { value, error } = schema.validate(req.body)
-    if (error) {
-      throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
+
+    const { success, error } = schema.safeParse(req.body)
+    if (!success) {
+      throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
     }
 
-    sesService.sendEmail(value.template_id, value.from, value.to, value.data).then((result) => {
+    sesService.sendEmail(req.body.template_id, req.body.from, req.body.to, req.body.data).then((result) => {
       return res.json({
         result
       })
