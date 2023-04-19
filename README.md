@@ -2,19 +2,33 @@
 
 Notifications plugin for Medusa ecommerce server that sends transactional emails via AWS SES (Simple Email Service).
 
+[Documentation](https://pevey.com/medusa-plugin-ses)
+
+If you are not familiar with Medusa, you can learn more on [the project web site](https://www.medusajs.com/).
+
+> Medusa is a set of commerce modules and tools that allow you to build rich, reliable, and performant commerce applications without reinventing core commerce logic. The modules can be customized and used to build advanced ecommerce stores, marketplaces, or any product that needs foundational commerce primitives. All modules are open-source and freely available on npm.
+
 ## Features
 
-- THERE ARE BREAKING CHANGES IF YOU ARE UPGRADING FROM 1.x to 2.0
-- ~~Uses the email templating features built into AWS SES~~ Changed in version 2.0.  Templates are now stored locally.  See Configuration section below.
+- Templates are stored locally.  
 - Templates are based on handlebars, so they are compatible with Sendgrid email templates
-- ~~This plugin does not currently handle email attachments of any sort.  If you have a plugin that adds pdf invoices or other attachments, they will not be sent via this plugin.  This may be added at a later time if the need is there.~~  Support for attachments added in version 2.0.
-- An API endpoint for testing and that can be used with other (non-Medusa) applications is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
+- You can refer to the Medusa template reference to see all data fields that are available for each event: [Template Reference](https://docs.medusajs.com/plugins/notifications/sendgrid#template-reference)
+- An API endpoint that is useful for testing and that can be used with other (non-Medusa) portions of your storefront application is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
+
+## Changes in 2.0.8
+
+- The template path option can now be absolute or relative to the Medusa root folder
+- No error will be thrown if html.hbs or text.hbs does not exist, so long as the other exists.
+
+## Node v20
+
+- If you starting to test out Node v20, be sure you give runtime permission for fs reads due to the new Node permissions API.  Otherwise, this plugin will not be able to read your email templates from the file system.
 
 ## Configuration
 
 Enable in your medusa-config.js file similar to other plugins:
 
-```
+```bash
   {
     resolve: `medusa-plugin-ses`,
     options: {
@@ -41,23 +55,33 @@ Enable in your medusa-config.js file similar to other plugins:
   },
 ```
 
-The credentials and region are pulled from env variables.  
-```
+The credentials and region are pulled from env variables.
+
+```bash
 SES_REGION=""
 SES_ACCESS_KEY_ID=""
 SES_SECRET_ACCESS_KEY=""
 SES_FROM="Cool Company <orders@example.com>"
 SES_ENABLE_ENDPOINT=false
-SES_TEMPLATE_PATH="/full/absolute/path/to/medusa-server/data/templates"
+SES_TEMPLATE_PATH="data/templates"
 ```
+
 - SES_REGION will be for example "us-east-1"
 
 - Obtain the access key id and secret access key by creating an IAM user with SES send permissions.
 
 - The SES_FROM email address must be a verified sender in your AWS account.
 
-- The template path must be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
-```
+- From version 2.0.8 and on, SES_TEMPLATE_PATH can be absolute (starting with '/', e.g., '/home/pevey/www/medusa/data/templates') or relative (e.g., 'data/templates')
+
+Remember that the from email address must be a verified sender in your AWS console.
+Also remember that if your AWS account is still in sandbox mode, you can only SEND emails to verified sender email addresses.
+
+## Templates
+
+The template path must be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
+
+```bash
 medusa-server  // root directory
 |-data
       |-templates
@@ -72,23 +96,24 @@ medusa-server  // root directory
             |- etc   
 ```
 
-- When emails are sent, each of the three parts will be compiled. 
-* subject is required
-* either html or text is required, but one or the other can be blank.
-- The template reference here explains the variables that can be used: https://docs.medusajs.com/add-plugins/sendgrid/#template-reference
+When emails are sent, each of the three parts will be compiled.
 
+- Subject is required
+- Either html or text is required, but one or the other can be blank.
+- From version 2.0.8 on, if either the html.hbs or text.hbs does not exist, no error will be thrown so long as the other exists.
 
-- This plugin adds an endpoint at http://[server]/ses/send
+## Testing
+
+This plugin adds an endpoint at http://[server]/ses/send
+
 By default, the endpoint will refuse to send any emails.
-This endpoint may be useful for testing purposes and for use by related applications.
-There is NO SECURITY on the endpoint by default.
-Most people will NOT need to enable this endpoint.
+This endpoint may be useful for testing purposes in a development environment or for use by related applications.
+
+There is NO SECURITY on the endpoint by default. Most people will NOT need to enable this endpoint.
 If you are certain that you want to enable it and that you know what you are doing,
 set the environment variable SES_ENABLE_ENDPOINT to "42" (string).
 The unsual setting is meant to prevent enabling by accident or without thought.
 To use the endpoint, POST a json req.body with: template_id, from, to, and data to /ses/send.
-Remember that the from email address must be a verified sender in your AWS console.
-Also remember that if your AWS account is still in sandbox mode, you can only SEND emails to verified sender email addresses.
 
 ## Acknowledgement
 

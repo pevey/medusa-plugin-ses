@@ -6,29 +6,31 @@ import {z } from "zod"
 const router = Router()
 
 export default (app) => {
-  router.use(bodyParser.json())
+	router.use(bodyParser.json())
 
-  router.post("/ses/send",(req, res) => {
-    const sesService = req.scope.resolve("sesService")
+	router.post("/ses/send",(req, res) => {
+		const sesService = req.scope.resolve("sesService")
 
-    const schema = z.object({
-      template_id: z.string().min(1),
-      from: z.string().min(1),
-      to: z.string().min(1),
-      data: z.object({}).required().default({}),
-    })
+		const schema = z.object({
+			template_id: z.string().min(1),
+			from: z.string().min(1),
+			to: z.string().min(1),
+			data: z.object({}).required().default({}),
+		})
 
-    const { success, error } = schema.safeParse(req.body)
-    if (!success) {
-      throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
-    }
+		const { success, error, data } = schema.safeParse(req.body)
+		if (!success) {
+			throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+		}
 
-    sesService.sendEmail(req.body.template_id, req.body.from, req.body.to, req.body.data).then((result) => {
-      return res.json({
-        result
-      })
-    })
-  })
+		//return res.json(data)
 
-  return router
+		sesService.sendEmail(data.template_id, data.from, data.to, data.data).then((result) => {
+			return res.json({
+			result
+			})
+		})
+	})
+
+	return router
 }
