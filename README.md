@@ -22,7 +22,7 @@ If you are not familiar with Medusa, you can learn more on [the project web site
 
 ## Node v20
 
-- If you starting to test out Node v20, be sure you give runtime permission for fs reads due to the new Node permissions API.  Otherwise, this plugin will not be able to read your email templates from the file system.
+- If you are starting to test out Node v20, be sure you give runtime permission for fs reads due to the new Node permissions API.  Otherwise, this plugin will not be able to read your email templates from the file system.
 
 ## Configuration
 
