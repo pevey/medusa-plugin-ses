@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.10
+
+### Patch Changes
+
+- Remove extraneous code from index.js
+
 ## 2.0.9
 
 ### Patch Changes
