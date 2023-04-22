@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.9
+
+### Patch Changes
+
+- The API endpoint will now return a more useful error when the templates are not found or compile errors are encountered rather than simply returning false.
+
 ## 2.0.8
 
 ### Patch Changes

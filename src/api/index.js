@@ -23,11 +23,9 @@ export default (app) => {
 			throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
 		}
 
-		//return res.json(data)
-
 		sesService.sendEmail(data.template_id, data.from, data.to, data.data).then((result) => {
 			return res.json({
-			result
+				result
 			})
 		})
 	})

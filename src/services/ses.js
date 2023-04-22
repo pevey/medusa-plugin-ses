@@ -164,12 +164,19 @@ class SESService extends NotificationService {
 		// set the environment variable SES_ENABLE_ENDPOINT to "42" (a string, not an int).
 		// The unsual setting is meant to prevent enabling by accident or without thought.
 		if (this.options_.enable_endpoint !== '42') { return false }
-		const { subject, html, text } = await this.compileTemplate(template_id, data)
-
-		//return { subject, html, text }
-
-		if (!subject || (!html && !text)) { return false }
+		
 		try {
+			const { subject, html, text } = await this.compileTemplate(template_id, data)
+			if (!subject || (!html && !text)) { 
+				return { 
+					message: "Message not sent. Templates were not found or a compile error was encountered.",
+					results: {
+						subject, 
+						html, 
+						text 
+					}
+				}
+			}
 			return this.transporter_.sendMail({
 				from: from,
 				to: to,
