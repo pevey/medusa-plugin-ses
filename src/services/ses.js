@@ -71,7 +71,7 @@ class SESService extends NotificationService {
 
 		const data = await this.fetchData(event, eventData, attachmentGenerator)
 		if (!data) { return false }
-console.log(data)
+
 		if (data.locale) {
 			templateId = this.getLocalizedTemplateId(event, data.locale) || templateId
 		}
