@@ -40,7 +40,7 @@ Enable in your medusa-config.js file similar to other plugins:
       template_path: process.env.SES_TEMPLATE_PATH,
       order_placed_template: 'order_placed',
       order_shipped_template: 'order_shipped',
-      user_password_reset_template: 'user_password_reset',
+      customer_password_reset_template: 'customer_password_reset',
       gift_card_created_template: 'gift_card_created',
       //order_canceled_template: 'order_canceled',
       //order_refund_created_template: 'order_refund_created',
@@ -50,6 +50,7 @@ Enable in your medusa-config.js file similar to other plugins:
       //swap_shipment_created_template: 'swap_shipment_created',
       //swap_received_template: 'swap_received',
       //claim_shipment_created_template: 'claim_shipment_created',
+      //user_password_reset_template: 'user_password_reset',
       //medusa_restock_template: 'medusa_restock',
     }
   },

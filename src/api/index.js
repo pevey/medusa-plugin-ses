@@ -5,7 +5,7 @@ import {z } from "zod"
 
 const router = Router()
 
-export default (app) => {
+export default () => {
 	router.use(bodyParser.json())
 
 	router.post("/ses/send",(req, res) => {

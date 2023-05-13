@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.11
+
+### Patch Changes
+
+- Update to tsc build process
+- Move most peer depencies to dev dependencies
+
 ## 2.0.10
 
 ### Patch Changes
