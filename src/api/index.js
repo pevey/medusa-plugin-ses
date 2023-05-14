@@ -1,14 +1,20 @@
+import cors from "cors"
+import configLoader from "@medusajs/medusa/dist/loaders/config"
 import { Router } from "express"
 import bodyParser from "body-parser"
-import { MedusaError } from "medusa-core-utils"
+import { MedusaError } from "@medusajs/utils"
 import {z } from "zod"
 
 const router = Router()
 
-export default () => {
+export default (rootDirectory) => {
+	const config = configLoader(rootDirectory)
+	const storeCorsOptions = { origin: config.projectConfig.store_cors.split(","), credentials: true, }
+   const adminCorsOptions = { origin: config.projectConfig.admin_cors.split(","), credentials: true, }
+
 	router.use(bodyParser.json())
 
-	router.post("/ses/send",(req, res) => {
+	router.post("/ses/send", cors(storeCorsOptions), (req, res) => {
 		const sesService = req.scope.resolve("sesService")
 
 		const schema = z.object({

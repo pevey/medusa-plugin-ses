@@ -3,7 +3,7 @@ import Handlebars from 'handlebars'
 import nodemailer from 'nodemailer'
 import path from 'path'
 import fs from 'fs'
-import { humanizeAmount, zeroDecimalCurrencies } from 'medusa-core-utils'
+import { humanizeAmount, zeroDecimalCurrencies } from '@medusajs/utils'
 import { NotificationService } from 'medusa-interfaces'
 
 class SESService extends NotificationService {
