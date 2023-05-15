@@ -15,11 +15,6 @@ If you are not familiar with Medusa, you can learn more on [the project web site
 - You can refer to the Medusa template reference to see all data fields that are available for each event: [Template Reference](https://docs.medusajs.com/plugins/notifications/sendgrid#template-reference)
 - An API endpoint that is useful for testing and that can be used with other (non-Medusa) portions of your storefront application is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
 
-## Changes in 2.0.8
-
-- The template path option can now be absolute or relative to the Medusa root folder
-- No error will be thrown if html.hbs or text.hbs does not exist, so long as the other exists.
-
 ## Node v20
 
 - If you are starting to test out Node v20, be sure you give runtime permission for fs reads due to the new Node permissions API.  Otherwise, this plugin will not be able to read your email templates from the file system.
@@ -80,7 +75,7 @@ Also remember that if your AWS account is still in sandbox mode, you can only SE
 
 ## Templates
 
-The template path must be the full absolute path to the folder.  For example, if your build runs from /home/medusa/medusa-server/, create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
+The templates used are stored locally.  Create a 'data/templates' folder and include the entire path in the SES_TEMPLATE_PATH variable.
 
 ```bash
 medusa-server  // root directory

@@ -4,8 +4,8 @@
 
 ### Patch Changes
 
-- Update to tsc build process
-- Move most peer depencies to dev dependencies
+- Minor: Switch to typexcript build process
+- Minor: Move most peer depencies to dev dependencies
 
 ## 2.0.10
 

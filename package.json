@@ -18,10 +18,9 @@
 		"cors": "^2.8.5",
 		"cross-env": "^5.2.1",
 		"express": "^4.17.2",
-		"jest": "^25.5.4",
 		"medusa-interfaces": "^1.3.7",
-		"typescript": "^4.9.5",
-		"typeorm": "^0.3.16"
+		"typeorm": "^0.3.16",
+		"typescript": "^4.9.5"
    },
 	"scripts": {
 		"prepare": "cross-env NODE_ENV=production yarn run build",
