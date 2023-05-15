@@ -4,8 +4,8 @@
 
 ### Patch Changes
 
-- Minor: Switch to typexcript build process
-- Minor: Move most peer depencies to dev dependencies
+- Minor: Switch to typescript build process
+- Minor: Move most peer dependencies to dev dependencies
 
 ## 2.0.10
 
