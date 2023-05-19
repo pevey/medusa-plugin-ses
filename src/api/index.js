@@ -21,7 +21,7 @@ export default (rootDirectory) => {
 			template_id: z.string().min(1),
 			from: z.string().min(1),
 			to: z.string().min(1),
-			data: z.object({}).required().default({}),
+			data: z.object({}).passthrough(),
 		})
 
 		const { success, error, data } = schema.safeParse(req.body)

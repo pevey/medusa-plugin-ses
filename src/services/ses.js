@@ -39,6 +39,9 @@ class SESService extends NotificationService {
 		super()
 
 		this.options_ = options
+		this.templatePath_ = (this.options_.template_path.startsWith('/')) ?
+			path.resolve(this.options_.template_path) : // The path given in options is absolute
+			path.join(__dirname, '../../..', this.options_.template_path) // The path given in options is relative
 
 		this.fulfillmentProviderService_ = fulfillmentProviderService
 		this.storeService_ = storeService
@@ -190,18 +193,14 @@ class SESService extends NotificationService {
 	}
 
 	async compileTemplate(templateId, data) {
-		const base = (this.options_.template_path.startsWith('/')) ?
-			path.resolve(this.options_.template_path, templateId) : // The path given in options is absolute
-			path.join(__dirname, '../../..', this.options_.template_path, templateId) // The path given in options is relative
+		const subjectTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'subject.hbs')) ?
+			Handlebars.compile(fs.readFileSync(path.join(this.templatePath_, templateId, 'subject.hbs'), "utf8")) : null
 
-		const subjectTemplate = fs.existsSync(path.join(base, 'subject.hbs')) ?
-			Handlebars.compile(fs.readFileSync(path.join(base, 'subject.hbs'), "utf8")) : null
+		const htmlTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'html.hbs')) ?
+			Handlebars.compile(fs.readFileSync(path.join(this.templatePath_, templateId, 'html.hbs'), "utf8")) : null
 
-		const htmlTemplate = fs.existsSync(path.join(base, 'html.hbs')) ?
-			Handlebars.compile(fs.readFileSync(path.join(base, 'html.hbs'), "utf8")) : null
-
-		const textTemplate = fs.existsSync(path.join(base, 'text.hbs')) ?
-			Handlebars.compile(fs.readFileSync(path.join(base, 'text.hbs'), "utf8")) : null
+		const textTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'text.hbs')) ?
+			Handlebars.compile(fs.readFileSync(path.join(this.templatePath_, templateId, 'text.hbs'), "utf8")) : null
 
 		return { 
 			subject: subjectTemplate? subjectTemplate(data) : null, 

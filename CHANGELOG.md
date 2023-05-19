@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.13
+
+### Patch Changes
+
+- Fixed validation of 'data' object on the dev/test api endpoint that was causing valid data to be dropped
+
+# Change Log
+
 ## 2.0.12
 
 ### Patch Changes
