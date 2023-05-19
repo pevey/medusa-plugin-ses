@@ -1,6 +1,6 @@
 {
    "name": "medusa-plugin-ses",
-   "version": "2.0.11",
+   "version": "2.0.12",
    "description": "AWS SES transactional emails using local handlebars templates",
    "main": "index.js",
    "repository": {
@@ -33,13 +33,11 @@
    },
    "dependencies": {
       "@aws-sdk/client-ses": "^3.241.0",
-      "fs": "^0.0.1-security",
       "handlebars": "^4.7.7",
       "nodemailer": "^6.9.1",
       "path": "^0.12.7",
       "zod": "^3.21.4"
    },
-   "gitHead": "3bbd1e8507e00bc471de6ae3c30207999a4a4011",
    "keywords": [
       "medusa-plugin",
       "medusa-plugin-notification"

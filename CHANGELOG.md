@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.12
+
+### Patch Changes
+
+- Minor: Removed unused dependency
+
 ## 2.0.11
 
 ### Patch Changes
