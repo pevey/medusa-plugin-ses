@@ -1,6 +1,6 @@
 {
    "name": "medusa-plugin-ses",
-   "version": "2.0.13",
+   "version": "2.0.14",
    "description": "AWS SES transactional emails using local handlebars templates",
    "main": "index.js",
    "repository": {
@@ -40,6 +40,14 @@
    },
    "keywords": [
       "medusa-plugin",
-      "medusa-plugin-notification"
+      "medusa-plugin-notification",
+		"email",
+		"react email",
+		"handlebars email",
+		"transactional email",
+		"ses",
+		"simple email service",
+		"aws ses",
+		"aws"
    ]
 }

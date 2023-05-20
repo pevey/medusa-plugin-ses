@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.14
+
+### Patch Changes
+
+- Fixed import reference for helper functions from @medusajs/utils to medusa-core-utils
+
+# Change Log
+
 ## 2.0.13
 
 ### Patch Changes
