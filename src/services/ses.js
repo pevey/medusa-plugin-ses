@@ -5,6 +5,7 @@ import path from 'path'
 import fs from 'fs'
 import { humanizeAmount, zeroDecimalCurrencies } from 'medusa-core-utils'
 import { NotificationService } from 'medusa-interfaces'
+import { MedusaError } from "@medusajs/utils"
 
 class SESService extends NotificationService {
 	static identifier = "ses"
@@ -71,8 +72,8 @@ class SESService extends NotificationService {
 		const ses = new aws.SES({
 			region: options.region,
 			credentials: {
-			accessKeyId: options.access_key_id,
-			secretAccessKey: options.secret_access_key,
+				accessKeyId: options.access_key_id,
+				secretAccessKey: options.secret_access_key,
 			},
 		})
 
@@ -83,17 +84,23 @@ class SESService extends NotificationService {
 
 	async sendNotification(event, eventData, attachmentGenerator) {
 		let templateId = this.getTemplateId(event)
-		if (!templateId) { return false }
+		if (!templateId) { 
+			throw new MedusaError(MedusaError.Types.INVALID_DATA, "SES service: No template was set for this event")
+		}
 
 		const data = await this.fetchData(event, eventData, attachmentGenerator)
-		if (!data) { return false }
+		if (!data) {
+			throw new MedusaError(MedusaError.Types.INVALID_DATA, "SES service: Invalid event data was received")
+		}
 
 		if (data.locale) {
 			templateId = this.getLocalizedTemplateId(event, data.locale) || templateId
 		}
 
 		const { subject, html, text } = await this.compileTemplate(templateId, data)
-		if (!subject || (!html && !text)) { return false }
+		if (!subject || (!html && !text)) { 
+			throw new MedusaError(MedusaError.Types.INVALID_DATA, "SES service: The requested templates were not found. Check template path in config.") 
+		}
 
 		const sendOptions = {
 			from: this.options_.from,

@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.15
+
+### Patch Changes
+
+- Print useful MedusaError messages to console when steps fail to assist with debugging and configuration
+
 ## 2.0.14
 
 ### Patch Changes

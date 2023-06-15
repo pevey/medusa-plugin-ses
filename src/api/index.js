@@ -12,8 +12,7 @@ export default (rootDirectory) => {
 	const storeCorsOptions = { origin: config.projectConfig.store_cors.split(","), credentials: true, }
    const adminCorsOptions = { origin: config.projectConfig.admin_cors.split(","), credentials: true, }
 
-	router.use(bodyParser.json())
-
+	router.use("/ses/send", bodyParser.json())
 	router.post("/ses/send", cors(storeCorsOptions), (req, res) => {
 		const sesService = req.scope.resolve("sesService")
 
