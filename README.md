@@ -108,7 +108,7 @@ This endpoint may be useful for testing purposes in a development environment or
 There is NO SECURITY on the endpoint by default. Most people will NOT need to enable this endpoint.
 If you are certain that you want to enable it and that you know what you are doing,
 set the environment variable SES_ENABLE_ENDPOINT to "42" (string).
-The unsual setting is meant to prevent enabling by accident or without thought.
+The unusual setting is meant to prevent enabling by accident or without thought.
 To use the endpoint, POST a json req.body with: template_id, from, to, and data to /ses/send.
 
 ## Acknowledgement
