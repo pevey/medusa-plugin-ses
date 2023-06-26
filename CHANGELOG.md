@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.0.17
+
+### Patch Changes
+
+- Add option to cc email address(es) on notifications for order.placed events
+```js
+order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
+```
+- Bump all dependencies to latest
+
 ## 2.0.16
 
 ### Patch Changes

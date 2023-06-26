@@ -21,6 +21,7 @@ class SESService extends NotificationService {
       *      enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
       *      template_path: process.env.SES_TEMPLATE_PATH,
       *      order_placed_template: 'order_placed',
+      *      order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
       *		 order_shipped_template: 'order_shipped',
       *		 customer_password_reset_template: 'customer_password_reset',
       *		 gift_card_created_template: 'gift_card_created',
@@ -85,7 +86,7 @@ class SESService extends NotificationService {
    async sendNotification(event, eventData, attachmentGenerator) {
       let templateId = this.getTemplateId(event)
       if (!templateId) { 
-         throw new MedusaError(MedusaError.Types.INVALID_DATA, "SES service: No template was set for this event")
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, `SES service: No template was set for event: ${event}`)
       }
 
       const data = await this.fetchData(event, eventData, attachmentGenerator)
@@ -132,6 +133,18 @@ class SESService extends NotificationService {
       await this.transporter_.sendMail(sendOptions)
       .then(() => { status = "sent" })
       .catch((error) => { status = "failed"; console.log(error) })
+
+      if (event === 'order.placed' && this.options_.order_placed_cc) {
+         const recipients = this.options_.order_placed_cc.split(',')
+         for (let recipient of recipients) {
+            recipient = recipient.trim()
+            await this.transporter_.sendMail({
+               ...sendOptions,
+               to: recipient,
+               subject: `[CC] ${sendOptions.subject}`,
+            })
+         }
+      }
 
       // We don't want heavy docs stored in DB
       delete sendOptions.attachments

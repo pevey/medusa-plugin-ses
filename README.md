@@ -34,6 +34,7 @@ Enable in your medusa-config.js file similar to other plugins:
       enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
       template_path: process.env.SES_TEMPLATE_PATH,
       order_placed_template: 'order_placed',
+      order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
       order_shipped_template: 'order_shipped',
       customer_password_reset_template: 'customer_password_reset',
       gift_card_created_template: 'gift_card_created',
