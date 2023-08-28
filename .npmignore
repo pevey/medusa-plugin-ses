@@ -4,6 +4,7 @@ node_modules
 .env*
 /*.js
 !index.js
+package-lock.json
 yarn.lock
 src
 .gitignore

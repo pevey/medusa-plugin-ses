@@ -32,7 +32,9 @@ Enable in your medusa-config.js file similar to other plugins:
       region: process.env.SES_REGION,
       from: process.env.SES_FROM,
       enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
+      enable_sim_mode: process.env.SES_ENABLE_SIM_MODE,
       template_path: process.env.SES_TEMPLATE_PATH,
+      partial_path: process.env.SES_PARTIAL_PATH,
       order_placed_template: 'order_placed',
       order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
       order_shipped_template: 'order_shipped',
@@ -59,8 +61,10 @@ SES_REGION=""
 SES_ACCESS_KEY_ID=""
 SES_SECRET_ACCESS_KEY=""
 SES_FROM="Cool Company <orders@example.com>"
-SES_ENABLE_ENDPOINT=false
 SES_TEMPLATE_PATH="data/templates"
+SES_PARTIAL_PATH="data/partials"
+SES_ENABLE_ENDPOINT=""
+SES_ENABLE_SIM_MODE=""
 ```
 
 - SES_REGION will be for example "us-east-1"
@@ -70,6 +74,10 @@ SES_TEMPLATE_PATH="data/templates"
 - The SES_FROM email address must be a verified sender in your AWS account.
 
 - From version 2.0.8 and on, SES_TEMPLATE_PATH can be absolute (starting with '/', e.g., '/home/pevey/www/medusa/data/templates') or relative (e.g., 'data/templates')
+
+- Partials are optional and supported in plugin versions 2.1.0 or later.  Any partials with the .hbs file extension that are located in the configured partials directory will be registered and available for use in templates.  For more information about Handlebars partials and how to use them in your templates, see the [Handlebars documentation](https://handlebarsjs.com/guide/partials.html). 
+
+- See the "Testing" section below for important info on enabling the endpoint and enabling simulation mode for the endpoint.
 
 Remember that the from email address must be a verified sender in your AWS console.
 Also remember that if your AWS account is still in sandbox mode, you can only SEND emails to verified sender email addresses.
@@ -111,6 +119,8 @@ If you are certain that you want to enable it and that you know what you are doi
 set the environment variable SES_ENABLE_ENDPOINT to "42" (string).
 The unusual setting is meant to prevent enabling by accident or without thought.
 To use the endpoint, POST a json req.body with: template_id, from, to, and data to /ses/send.
+
+Setting the enable_sim_mode option to true will cause the endpoint to return information about whether the template was succefully compiled and the compiled result, but it will not actually send the email.  This setting only applies to calls to the ses/send endpoint.  It does not affect other calls to the notification service from within Medusa, which will still send emails as per usual.
 
 ## Acknowledgement
 

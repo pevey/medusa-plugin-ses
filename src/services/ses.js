@@ -19,7 +19,9 @@ class SESService extends NotificationService {
       *      region: process.env.SES_REGION,
       *      from: process.env.SES_FROM,
       *      enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
+      *      enable_sim_mode: process.env.SES_ENABLE_SIM_MODE,
       *      template_path: process.env.SES_TEMPLATE_PATH,
+      *      partial_path: process.env.SES_PARTIAL_PATH,
       *      order_placed_template: 'order_placed',
       *      order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
       *		 order_shipped_template: 'order_shipped',
@@ -54,9 +56,22 @@ class SESService extends NotificationService {
       super()
 
       this.options_ = options
+
       this.templatePath_ = (this.options_.template_path.startsWith('/')) ?
          path.resolve(this.options_.template_path) : // The path given in options is absolute
          path.join(__dirname, '../../..', this.options_.template_path) // The path given in options is relative
+
+      if (this.options_.partial_path) {
+         this.partialPath_ = (this.options_.partial_path.startsWith('/')) ?
+            path.resolve(this.options_.partial_path) : // The path given in options is absolute
+            path.join(__dirname, '../../..', this.options_.partial_path) // The path given in options is relative
+         fs.readdirSync(this.partialPath_).forEach(filename => {
+            if (filename.endsWith('.hbs')) {
+               const name = path.parse(filename).name
+               Handlebars.registerPartial(name, Handlebars.compile(fs.readFileSync(path.join(this.partialPath_, filename), "utf8")))
+            }
+         })
+      }
 
       this.fulfillmentProviderService_ = fulfillmentProviderService
       this.storeService_ = storeService
@@ -213,13 +228,24 @@ class SESService extends NotificationService {
                }
             }
          }
-         return this.transporter_.sendMail({
-            from: from,
-            to: to,
-            subject,
-            html,
-            text
-         })
+         if (this.options_.enable_sim_mode) {
+            return { 
+               message: "Message could have been sent.",
+               results: {
+                  subject, 
+                  html, 
+                  text 
+               }
+            }
+         } else {
+            return this.transporter_.sendMail({
+               from: from,
+               to: to,
+               subject,
+               html,
+               text
+            })
+         }
       } catch (error) {
          throw error
       }
@@ -236,9 +262,9 @@ class SESService extends NotificationService {
          Handlebars.compile(fs.readFileSync(path.join(this.templatePath_, templateId, 'text.hbs'), "utf8")) : null
 
       return { 
-         subject: subjectTemplate? subjectTemplate(data) : null, 
-         html: htmlTemplate? htmlTemplate(data) : null, 
-         text: textTemplate? textTemplate(data) : null
+         subject: subjectTemplate? subjectTemplate(data) : '', 
+         html: htmlTemplate? htmlTemplate(data) : '', 
+         text: textTemplate? textTemplate(data) : ''
       }
    }
 

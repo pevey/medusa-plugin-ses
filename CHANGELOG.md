@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.1.0
+
+### Patch Changes
+
+- Feat: Add ability to use partials
+- Feat: Add option to use optional endpoint in similation mode.  If enabled, not emails will be sent.  The plugin will attempt to compile the template and return the results.  This is useful for template debugging.
+
 ## 2.0.17
 
 ### Patch Changes
