@@ -15,9 +15,15 @@ If you are not familiar with Medusa, you can learn more on [the project web site
 - You can refer to the Medusa template reference to see all data fields that are available for each event: [Template Reference](https://docs.medusajs.com/plugins/notifications/sendgrid#template-reference)
 - An API endpoint that is useful for testing and that can be used with other (non-Medusa) portions of your storefront application is included.  By default, the endpoint does nothing for security reasons.  See configuration options below to enable it.
 
-## Node v20
+## Installation
 
-- If you are starting to test out Node v20, be sure you give runtime permission for fs reads due to the new Node permissions API.  Otherwise, this plugin will not be able to read your email templates from the file system.
+Inside your medusa backend root folder, type:
+
+```bash
+yarn add medusa-plugin-ses
+```
+
+Replace "yarn add" with the correct command for your package manager if you are using (for example) npm, pnpm, or bun.
 
 ## Configuration
 

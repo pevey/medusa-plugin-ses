@@ -24,12 +24,6 @@
       "build": "tsc",
       "watch": "tsc --watch"
    },
-   "peerDependencies": {
-      "@medusajs/medusa": "^1.15.0",
-      "@medusajs/utils": "1.9.7",
-      "medusa-core-utils": "^1.2.0",
-      "medusa-interfaces": "^1.3.7"
-   },
    "dependencies": {
       "@aws-sdk/client-ses": "^3.379.1",
       "handlebars": "^4.7.7",
