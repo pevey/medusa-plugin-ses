@@ -1,4 +1,3 @@
-import cors from "cors"
 import configLoader from "@medusajs/medusa/dist/loaders/config"
 import { Router } from "express"
 import bodyParser from "body-parser"
