@@ -19,7 +19,7 @@ export default (rootDirectory) => {
       }
 
       const schema = z.object({
-         passKey: z.string().min(1),
+         pass_key: z.string().min(1),
          template_id: z.string().min(1),
          from: z.string().min(1),
          to: z.string().min(1),
