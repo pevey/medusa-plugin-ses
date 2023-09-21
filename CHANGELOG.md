@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.2.2
+
+- Remove unused package
+
 ## 2.2.1
 
 - Feat: The optional endpoint now uses a passkey.  Please see the Readme.
