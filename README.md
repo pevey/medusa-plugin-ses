@@ -119,12 +119,15 @@ You can resolve the service to send emails from your custom services or other re
 
 ```js
 const sesService = scope.resolve("sesService")
+
 const sendOptions =  {
    templateId: "d-123....",
    from: "ACME <acme@mail.com>",
    to: "customer@mail.com",
    data: {}
 }
+
+sesService.sendEmail(sendOptions)
 ```
 
 ## Testing

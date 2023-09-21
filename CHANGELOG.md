@@ -1,13 +1,10 @@
 # Change Log
 
-## 2.2.2
-
-- Remove unused package
-
-## 2.2.1
+## 2.2.3
 
 - Feat: The optional endpoint now uses a passkey.  Please see the Readme.
 - Feat: The internal sesService.sendEmail(template_id, from, to, data) function is now available whether or not the endpoint is enabled.  This allows you to use the email sending ability in custom services without having to expose the endpoint.
+- Fix: Remove unused package
 
 ## 2.1.1
 
