@@ -113,6 +113,20 @@ When emails are sent, each of the three parts will be compiled.
 - Either html or text is required, but one or the other can be blank.
 - From version 2.0.8 on, if either the html.hbs or text.hbs does not exist, no error will be thrown so long as the other exists.
 
+## Dynamic Usage
+
+You can resolve the service to send emails from your custom services or other resources. For example:
+
+```js
+const sesService = scope.resolve("sesService")
+const sendOptions =  {
+   templateId: "d-123....",
+   from: "ACME <acme@mail.com>",
+   to: "customer@mail.com",
+   data: {}
+}
+```
+
 ## Testing
 
 This plugin adds an endpoint at http://[server]/ses/send
@@ -122,9 +136,29 @@ This endpoint may be useful for testing purposes in a development environment or
 
 There is NO SECURITY on the endpoint by default. Most people will NOT need to enable this endpoint.
 If you are certain that you want to enable it and that you know what you are doing,
-set the environment variable SES_ENABLE_ENDPOINT to "42" (string).
-The unusual setting is meant to prevent enabling by accident or without thought.
-To use the endpoint, POST a json req.body with: template_id, from, to, and data to /ses/send.
+set the environment variable SES_ENABLE_ENDPOINT to the string you will use as your pass key when sending requests to the endpoint.
+
+To use the endpoint, POST a json req.body with: pass_key, template_id, from, to, and data to /ses/send.
+
+Example:
+
+```bash
+SES_ENABLE_ENDPOINT="42"
+```
+
+```json
+{
+   "template_id":"customer_password_reset",
+   "from":"me@me.com",
+   "to": "you@you.com",
+   "data": {
+      "customer": {
+         "first_name": "Test"
+      }
+   },
+   "pass_key": "42"
+}
+```
 
 Setting the enable_sim_mode option to true will cause the endpoint to return information about whether the template was successfully compiled and the compiled result, but it will not actually send the email.  This setting only applies to calls to the ses/send endpoint.  It does not affect other calls to the notification service from within Medusa, which will still send emails as per usual.
 

@@ -214,8 +214,7 @@ class SESService extends NotificationService {
       // If you are certain that you want to enable it and that you know what you are doing,
       // set the environment variable SES_ENABLE_ENDPOINT to "42" (a string, not an int).
       // The unsual setting is meant to prevent enabling by accident or without thought.
-      if (this.options_.enable_endpoint !== '42') { return false }
-      
+   
       try {
          const { subject, html, text } = await this.compileTemplate(template_id, data)
          if (!subject || (!html && !text)) { 
