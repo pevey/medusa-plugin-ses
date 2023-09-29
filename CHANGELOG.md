@@ -41,6 +41,7 @@
       order.refund_created
       order.refund_failed
       order.swap_created
+      restock-notification.restocked
       swap.created
       swap.received
       swap.fulfillment_created
