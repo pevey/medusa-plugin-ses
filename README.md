@@ -20,44 +20,36 @@ If you are not familiar with Medusa, you can learn more on [the project web site
 Inside your medusa backend root folder, type:
 
 ```bash
-yarn add medusa-plugin-ses
+yarn add medusa-plugin-ses medusa-plugin-notificationdata
 ```
 
 Replace "yarn add" with the correct command for your package manager if you are using (for example) npm, pnpm, or bun.
 
 ## Configuration
 
-Enable in your medusa-config.js file similar to other plugins:
+Enable in your medusa-config.js file similar to other plugins.  The medusa-plugin-notificationdata helper plugin MUST be loaded before medusa-plugin-ses.
 
-```bash
+```js
+const plugins = [
+   //... other plugins
+   `medusa-plugin-notificationdata`,
   {
-    resolve: `medusa-plugin-ses`,
+    resolve: "medusa-plugin-ses",
     options: {
       access_key_id: process.env.SES_ACCESS_KEY_ID,
       secret_access_key: process.env.SES_SECRET_ACCESS_KEY,
       region: process.env.SES_REGION,
       from: process.env.SES_FROM,
-      enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
-      enable_sim_mode: process.env.SES_ENABLE_SIM_MODE,
       template_path: process.env.SES_TEMPLATE_PATH,
       partial_path: process.env.SES_PARTIAL_PATH,
-      order_placed_template: 'order_placed',
-      order_placed_cc: 'person1@example.com,person2@example.com', // string, email address separated by comma
-      order_shipped_template: 'order_shipped',
-      customer_password_reset_template: 'customer_password_reset',
-      gift_card_created_template: 'gift_card_created',
-      //order_canceled_template: 'order_canceled',
-      //order_refund_created_template: 'order_refund_created',
-      //order_return_requested_template: 'order_return_requested',
-      //order_items_returned_template: 'order_items_returned',
-      //swap_created_template: 'swap_created',
-      //swap_shipment_created_template: 'swap_shipment_created',
-      //swap_received_template: 'swap_received',
-      //claim_shipment_created_template: 'claim_shipment_created',
-      //user_password_reset_template: 'user_password_reset',
-      //medusa_restock_template: 'medusa_restock',
+      // optional string containing email address separated by comma
+      order_placed_cc: 'person1@example.com,person2@example.com', 
+      enable_endpoint: process.env.SES_ENABLE_ENDPOINT,
+      enable_sim_mode: process.env.SES_ENABLE_SIM_MODE
     }
   },
+  //... other plugins
+]
 ```
 
 The credentials and region are pulled from env variables.
@@ -79,7 +71,7 @@ SES_ENABLE_SIM_MODE=""
 
 - The SES_FROM email address must be a verified sender in your AWS account.
 
-- From version 2.0.8 and on, SES_TEMPLATE_PATH can be absolute (starting with '/', e.g., '/home/pevey/www/medusa/data/templates') or relative (e.g., 'data/templates')
+- The SES_TEMPLATE_PATH can be absolute (starting with '/', e.g., '/home/pevey/www/medusa/data/templates') or relative (e.g., 'data/templates')
 
 - Partials are optional and supported in plugin versions 2.1.0 or later.  Any partials with the .hbs file extension that are located in the configured partials directory will be registered and available for use in templates.  For more information about Handlebars partials and how to use them in your templates, see the [Handlebars documentation](https://handlebarsjs.com/guide/partials.html). 
 
@@ -110,15 +102,14 @@ medusa-server  // root directory
 When emails are sent, each of the three parts will be compiled.
 
 - Subject is required
-- Either html or text is required, but one or the other can be blank.
-- From version 2.0.8 on, if either the html.hbs or text.hbs does not exist, no error will be thrown so long as the other exists.
+- Either html or text is required.
 
 ## Dynamic Usage
 
-You can resolve the service to send emails from your custom services or other resources. For example:
+You can resolve the service to send emails from your custom services or other resources. For example, on a custom API endpoint, you can add:
 
 ```js
-const sesService = scope.resolve("sesService")
+const sesService = req.scope.resolve("sesService")
 
 const sendOptions =  {
    templateId: "d-123....",
@@ -129,6 +120,8 @@ const sendOptions =  {
 
 sesService.sendEmail(sendOptions)
 ```
+
+Make sure you consider security and enable proper protections on your endpoint if you do this.
 
 ## Testing
 
