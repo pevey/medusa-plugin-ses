@@ -164,7 +164,3 @@ SES_ENABLE_ENDPOINT="42"
 ```
 
 Setting the enable_sim_mode option to true will cause the endpoint to return information about whether the template was successfully compiled and the compiled result, but it will not actually send the email.  This setting only applies to calls to the ses/send endpoint.  It does not affect other calls to the notification service from within Medusa, which will still send emails as per usual.
-
-## Acknowledgement
-
-This plugin borrows extensively from medusa-plugin-sendgrid by Oliver Juhl.

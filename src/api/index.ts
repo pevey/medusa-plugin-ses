@@ -1,17 +1,17 @@
 import configLoader from "@medusajs/medusa/dist/loaders/config"
-import { Router } from "express"
-import bodyParser from "body-parser"
+import { json, Router } from "express"
 import { MedusaError } from "@medusajs/utils"
 import { z } from "zod"
+import { SESOptions } from "../services/ses"
 
 const router = Router()
 
-export default (rootDirectory) => {
+export default (rootDirectory: string): Router | Router[] => {
    const config = configLoader(rootDirectory)
-   const pluginConfig = config.plugins.find((p) => p.resolve === "medusa-plugin-ses")
-   const passKey = pluginConfig?.options.enable_endpoint
+   const pluginConfig: SESOptions = config.plugins.find((p: any) => p.resolve === "medusa-plugin-ses")['options']
+   const passKey = pluginConfig.enable_endpoint
 
-   router.use("/ses/send", bodyParser.json())
+   router.use("/ses/send", json())
    router.post("/ses/send", (req, res) => {
       if (!passKey) {
          res.sendStatus(404)
@@ -25,6 +25,7 @@ export default (rootDirectory) => {
          data: z.object({}).passthrough(),
       })
       
+      // @ts-ignore
       const { success, error, data } = schema.safeParse(req.body)
       if (!success) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
@@ -36,7 +37,7 @@ export default (rootDirectory) => {
 
       const sesService = req.scope.resolve("sesService")
 
-      sesService.sendEmail(data.template_id, data.from, data.to, data.data).then((result) => {
+      sesService.sendEmail(data.template_id, data.from, data.to, data.data, true).then((result) => {
          return res.json({
             result
          })

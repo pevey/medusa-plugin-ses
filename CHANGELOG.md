@@ -1,5 +1,63 @@
 # Change Log
 
+## 3.0.0
+
+- Methods related to retrieving event data have been moved to a separate service: medusa-plugin-notificationdata
+- Template names are no longer set individually in the plugin options.  Templates MUST take the name of the event name, with "." replaced by "_".  For example, the "claim.created" event will only be processed by this notification plugin if the "claim_created" folder exists at the configure template parent path and contains a valid template.
+- Greatly expanded the events available to use without having to create a custom subscriber.  Events will only be handled if a template folder exists.  Possible handled events now include:
+      batch.created
+      batch.updated
+      batch.canceled
+      batch.pre_processed
+      batch.confirmed
+      batch.processing
+      batch.completed
+      batch.failed
+      claim.created
+      claim.updated
+      claim.canceled
+      claim.fulfillment_created
+      claim.shipment_created
+      claim.refund_processed
+      customer.created
+      customer.updated
+      customer.password_reset
+      gift_card.created
+      invite.created
+      order.placed
+      order.updated
+      order.canceled
+      order.completed
+      order.orders_claimed
+      order.gift_card_created
+      order.payment_captured
+      order.payment_capture_failed
+      order.fulfillment_created
+      order.shipment_created
+      order.fulfillment_canceled
+      order.return_requested
+      order.items_returned
+      order.return_action_required
+      order.refund_created
+      order.refund_failed
+      order.swap_created
+      swap.created
+      swap.received
+      swap.fulfillment_created
+      swap.shipment_created
+      swap.payment_completed
+      swap.payment_captured
+      swap.payment_capture_failed
+      swap.refund_processed
+      swap.process_refund_failed
+      user.created
+      user.updated
+      user.password_reset
+      user.deleted
+- Fixed bug where simulation mode setting would apply to usage of the sendEmail method that were not tiggered through the API endpoint.  Simulation mode will now only affect request to the /ses/send endpoint.
+- Updated from javascript to typescript
+- License updated to GPL v3
+
 ## 2.2.3
 
 - Feat: The optional endpoint now uses a passkey.  Please see the Readme.

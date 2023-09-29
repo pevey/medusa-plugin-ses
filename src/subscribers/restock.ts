@@ -1,5 +1,13 @@
+import { EventBusService, NotificationService } from "@medusajs/medusa"
+
 class RestockNotification {
+   protected readonly eventBus_: EventBusService
+   protected readonly sesService_: NotificationService
+
    constructor({ eventBusService, sesService }) {
+      this.eventBus_ = eventBusService   
+      this.sesService_ = sesService  
+      
       eventBusService.subscribe(
          "restock-notification.restocked",
          async (eventData) => {

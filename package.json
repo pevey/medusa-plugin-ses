@@ -9,7 +9,13 @@
    },
    "homepage:": "https://pevey.com/medusa-plugin-ses",
    "author": "Lacey Pevey",
-   "license": "MIT",
+   "license": "GPL-3.0-or-later",
+   "dependencies": {
+      "@aws-sdk/client-ses": "^3.379.1",
+      "handlebars": "^4.7.7",
+      "nodemailer": "^6.9.3",
+      "zod": "^3.21.4"
+   },
    "devDependencies": {
       "body-parser": "^1.19.0",
       "cross-env": "^5.2.1",
@@ -22,12 +28,6 @@
       "test": "jest --passWithNoTests src",
       "build": "tsc",
       "watch": "tsc --watch"
-   },
-   "dependencies": {
-      "@aws-sdk/client-ses": "^3.379.1",
-      "handlebars": "^4.7.7",
-      "nodemailer": "^6.9.3",
-      "zod": "^3.21.4"
    },
    "keywords": [
       "medusa-plugin",
