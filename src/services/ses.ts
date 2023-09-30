@@ -76,14 +76,8 @@ class SESService extends NotificationService {
    // @ts-ignore
    async sendNotification(event, eventData, attachmentGenerator) {
       let templateId = event.split('.').join('_')
-console.log(this.templatePath_)
-console.log(templateId)
-console.log(eventData)
       const data = await this.notificationDataService_.fetchData(event, eventData, attachmentGenerator)
-      if (!data) {
-         throw new MedusaError(MedusaError.Types.INVALID_DATA, "SES service: Invalid event data was received")
-      }
-
+      if (!data.email) return
       if (data.locale) {
          templateId = this.getLocalizedTemplateId(event, data.locale) || templateId
       }

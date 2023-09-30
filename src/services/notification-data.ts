@@ -70,6 +70,7 @@ class NotificationDataService extends TransactionBaseService {
 
    async fetchData(event, data, attachmentGenerator) {
       const noun = event.split(".")[0]
+console.log(noun)
       switch (noun) {
          case "batch":
             return await this.getBatchData(event, data, attachmentGenerator)
@@ -88,6 +89,7 @@ class NotificationDataService extends TransactionBaseService {
          case "swap":
             return await this.getSwapData(event, data, attachmentGenerator)
          case "user":
+            console.log(this.getUserData(event, data, attachmentGenerator))
             return this.getUserData(event, data, attachmentGenerator)
          default:
             return {}
@@ -125,7 +127,6 @@ class NotificationDataService extends TransactionBaseService {
    }
 
    getCustomerData(event, data, attachmentGenerator) {
-      if (!data.email) return {}
       return data
    }
 
@@ -143,7 +144,7 @@ class NotificationDataService extends TransactionBaseService {
    }
 
    getInviteData(event, data, attachmentGenerator) {
-      return { ...data, email: data.email }
+      return { ...data, email: data.user_email }
    }
 
    async getOrderData(event, data, attachmentGenerator) {
@@ -447,7 +448,6 @@ class NotificationDataService extends TransactionBaseService {
    }
 
    getUserData(event, data, attachmentGenerator) {
-      if (!data.email) return {}
       return data
    }
 
