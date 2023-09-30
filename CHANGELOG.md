@@ -2,7 +2,7 @@
 
 ## 3.0.0
 
-- Methods related to retrieving event data have been moved to a separate service: medusa-plugin-notificationdata
+- Methods related to retrieving event data have been moved to a separate internal service.
 - Template names are no longer set individually in the plugin options.  Templates MUST take the name of the event name, with "." replaced by "_".  For example, the "claim.created" event will only be processed by this notification plugin if the "claim_created" folder exists at the configure template parent path and contains a valid template.
 - Greatly expanded the events available to use without having to create a custom subscriber.  Events will only be handled if a template folder exists.  Possible handled events now include:
       batch.created

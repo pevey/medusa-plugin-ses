@@ -20,19 +20,18 @@ If you are not familiar with Medusa, you can learn more on [the project web site
 Inside your medusa backend root folder, type:
 
 ```bash
-yarn add medusa-plugin-ses medusa-plugin-notificationdata
+yarn add medusa-plugin-ses
 ```
 
 Replace "yarn add" with the correct command for your package manager if you are using (for example) npm, pnpm, or bun.
 
 ## Configuration
 
-Enable in your medusa-config.js file similar to other plugins.  The medusa-plugin-notificationdata helper plugin MUST be loaded before medusa-plugin-ses.
+Enable in your medusa-config.js file similar to other plugins. 
 
 ```js
 const plugins = [
    //... other plugins
-   `medusa-plugin-notificationdata`,
   {
     resolve: "medusa-plugin-ses",
     options: {
