@@ -3,6 +3,7 @@ import Handlebars from "handlebars"
 import nodemailer from "nodemailer"
 import path from "path"
 import fs from "fs"
+import { exec } from "child_process"
 import { NotificationService } from "medusa-interfaces"
 import { MedusaError } from "@medusajs/utils"
 
@@ -17,6 +18,7 @@ export interface SESOptions {
    localization?: any
    enable_endpoint?: string
    enable_sim_mode?: boolean
+   enableUI?: boolean
 }
 
 interface SendOptions {
@@ -237,6 +239,26 @@ class SESService extends NotificationService {
          return map[event]
       }
       return null
+   }
+
+   async listActiveTemplates() {
+      // let templates = []
+      // exec('ls -d ' + this.templatePath_ + '/*/ | xargs -n 1 basename', (err, stdout, stderr) => {
+      //    if (err) {
+      //       console.log(err)
+      //       return
+      //    }
+      //    console.log(stdout)
+      //    //templates = stdout.split(/\r?\n/)
+      //    templates = stdout.split(' ')
+      //    console.log(templates)
+      // })
+      // return templates
+      // const files = fs.readdirSync(this.templatePath_).forEach(file => {
+      //    console.log(file)
+      // })
+      const files = fs.readdirSync(this.templatePath_)
+      return files
    }
 }
 

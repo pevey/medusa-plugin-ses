@@ -70,7 +70,6 @@ class NotificationDataService extends TransactionBaseService {
 
    async fetchData(event, data, attachmentGenerator) {
       const noun = event.split(".")[0]
-console.log(noun)
       switch (noun) {
          case "batch":
             return await this.getBatchData(event, data, attachmentGenerator)
