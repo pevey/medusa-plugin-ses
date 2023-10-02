@@ -1,5 +1,3 @@
-import React from "react"
-
 const Star = ({
    size = "20",
    color = "currentColor",

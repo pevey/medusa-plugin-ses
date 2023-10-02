@@ -100,7 +100,7 @@ class NotificationDataService extends TransactionBaseService {
       if (!job.created_by) return
       const user = await this.userService_.retrieve(job.created_by)
       if (!user) return
-      return { ...data, email: user.email }
+      return { ...data, ...job, email: user.email }
    }
 
    async getClaimData(event, data, attachmentGenerator) {

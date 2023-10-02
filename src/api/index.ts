@@ -25,10 +25,6 @@ export default (rootDirectory: string): Router | Router[] => {
       let templates = await sesService.listActiveTemplates()
       console.log(templates)
       return res.json({ templates })
-      // .then((templates) => {
-      //    console.log(templates)
-      //    return res.json({ templates })
-      // })
    })
 
 

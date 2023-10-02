@@ -3,6 +3,7 @@ import Handlebars from "handlebars"
 import nodemailer from "nodemailer"
 import path from "path"
 import fs from "fs"
+import { readdir } from "node:fs/promises"
 import { exec } from "child_process"
 import { NotificationService } from "medusa-interfaces"
 import { MedusaError } from "@medusajs/utils"
@@ -77,6 +78,7 @@ class SESService extends NotificationService {
 
    // @ts-ignore
    async sendNotification(event, eventData, attachmentGenerator) {
+      if (eventData?.no_notification) return
       let templateId = event.split('.').join('_')
       const data = await this.notificationDataService_.fetchData(event, eventData, attachmentGenerator)
       if (!data.email) return
@@ -178,7 +180,7 @@ class SESService extends NotificationService {
       * @param {boolean} fromEndpoint - whether the request came from the API endpoint {default: false}
       * @return {Promise} result of the send operation
       */
-   async sendEmail(template_id, from, to, data, fromEndpoint = false) {
+   async sendEmail(template_id, from, to, data, from_endpoint = false, force_sim_mode = false) {
       // This function is used by the /ses/send API endpoint included in this plugin.
       // The endpoint is disabled by default.   
       try {
@@ -193,7 +195,7 @@ class SESService extends NotificationService {
                }
             }
          }
-         if (fromEndpoint && this.options_.enable_sim_mode) {
+         if ((from_endpoint && this.options_.enable_sim_mode) || force_sim_mode) {
             return { 
                message: "Message could have been sent.",
                results: {
@@ -257,9 +259,175 @@ class SESService extends NotificationService {
       // const files = fs.readdirSync(this.templatePath_).forEach(file => {
       //    console.log(file)
       // })
-      const files = fs.readdirSync(this.templatePath_)
-      return files
+      let templates = []
+      let files = await readdir(this.templatePath_)
+console.log(files)
+      let events = files.map(file => file.replace('_', '.'))
+console.log(events)
+      for (let file of files) {
+         const event = file.replace('_', '.')
+         if (validEvents.includes(event)) {
+            templates.push({
+               name: event,
+               subject: fs.existsSync(path.join(this.templatePath_, file, 'subject.hbs')),
+               html: fs.existsSync(path.join(this.templatePath_, file, 'html.hbs')),
+               text: fs.existsSync(path.join(this.templatePath_, file, 'text.hbs')),
+               path: path.join(this.templatePath_, file)
+            })
+         }
+      }
+      console.log(templates)
+      // fs.readdirSync(this.templatePath_).forEach(file => {
+      //    if (validEvents.includes(file)) {
+
+
+      //       templates.push({
+      //          name: file,
+      //          path: path.join(this.templatePath_, file)
+      //       })
+      //    }
+      // })
+      return templates
    }
 }
 
 export default SESService
+
+const validEvents = [
+   'batch.created',
+   'batch.updated',
+   'batch.canceled',
+   'batch.pre_processed',
+   'batch.confirmed',
+   'batch.processing',
+   'batch.completed',
+   'batch.failed',
+   'claim.created',
+   'claim.updated',
+   'claim.canceled',
+   'claim.fulfillment_created',
+   'claim.shipment_created',
+   'claim.refund_processed',
+   'customer.created',
+   'customer.updated',
+   'customer.password_reset',
+   'gift_card.created',
+   'invite.created',
+   'order.placed',
+   'order.updated',
+   'order.canceled',
+   'order.completed',
+   'order.orders_claimed',
+   'order.gift_card_created',
+   'order.payment_captured',
+   'order.payment_capture_failed',
+   'order.fulfillment_created',
+   'order.shipment_created',
+   'order.fulfillment_canceled',
+   'order.return_requested',
+   'order.items_returned',
+   'order.return_action_required',
+   'order.refund_created',
+   'order.refund_failed',
+   'order.swap_created',
+   'restock-notification.restocked',
+   'swap.created',
+   'swap.received',
+   'swap.fulfillment_created',
+   'swap.shipment_created',
+   'swap.payment_completed',
+   'swap.payment_captured',
+   'swap.payment_capture_failed',
+   'swap.refund_processed',
+   'swap.process_refund_failed',
+   'user.created',
+   'user.updated',
+   'user.password_reset',
+   'user.deleted'
+]
+
+const data = {
+   "batch.created": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at"
+   ],
+   "batch.updated": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "updated_at"
+   ],
+   "batch.canceled": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "canceled_at"
+   ],
+   "batch.pre_processed": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "pre_processed_at"
+   ],
+   "batch.confirmed": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "confirmed_at"
+   ],
+   "batch.processing": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "processing_at"
+   ],
+   "batch.completed": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "completed_at"
+   ],
+   "batch.failed": [
+      "id",
+      "type",
+      "context",
+      "result",
+      "dry_run",
+      "created_at",
+      "failed_at"
+   ],
+   "claim.created": [
+   ],
+   "claim.updated": [
+   ],
+   "claim.canceled": [
+   ],
+   "claim.fulfillment_created": [
+   ],
+   "claim.shipment_created": [
+   ],
+   "claim.refund_processed": [
+   ]
+}
