@@ -9,22 +9,105 @@ import { SESOptions } from "../services/ses"
 const router = Router()
 
 export default (rootDirectory: string): Router | Router[] => {
-   const { configModule } = getConfigFile<ConfigModule>(rootDirectory, "medusa-config")
-   const { projectConfig } = configModule
+   // const { configModule } = getConfigFile<ConfigModule>(rootDirectory, "medusa-config")
+   // const { projectConfig } = configModule
+   const { configModule: { projectConfig, plugins } } = getConfigFile(rootDirectory, "medusa-config") as { configModule: ConfigModule }
    const adminCorsOptions = { origin: projectConfig.admin_cors.split(","), credentials: true }
-   const sesConfig: SESOptions = configModule.plugins.find((p: any) => p.resolve === "medusa-plugin-ses")['options']
+   // const sesConfig: SESOptions = configModule.plugins.find((p: any) => p.resolve === "medusa-plugin-ses")['options']
+   const sesConfig: SESOptions = plugins.find((p: any) => p.resolve === "medusa-plugin-ses")['options']
    const passKey = sesConfig.enable_endpoint
-   // const templatePath = pluginConfig.template_path
-   // const partialPath = pluginConfig.partial_path
 
-   router.use("/admin/ses/", cors(adminCorsOptions, authenticate()))
+   router.use("/admin/ses/", cors(adminCorsOptions), authenticate())
+
+   // ADMIN - GET TEMPLATE PREVIEW
+   router.get("/admin/ses/templates/:id/preview", async (req, res) => {
+      const schema = z.object({
+         id: z.string().min(1).max(100),
+      })
+      // @ts-ignore
+      const { success, error, data } = schema.safeParse(req.params)
+      if (!success) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+      }
+      const sesService = req.scope.resolve("sesService")
+      let template = await sesService.getTemplate(data.id)
+      console.log(template)
+      res.set('Content-Type', 'text/html')
+      res.send(Buffer.from(template.html))
+   })
+
+   // ADMIN - GET TEMPLATE DETAILS
+   router.get("/admin/ses/templates/:id", async (req, res) => {
+      const schema = z.object({
+         id: z.string().min(1).max(100),
+      })
+      // @ts-ignore
+      const { success, error, data } = schema.safeParse(req.params)
+      if (!success) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+      }
+      const sesService = req.scope.resolve("sesService")
+      let template = await sesService.getTemplate(data.id)
+      return res.json({ template })
+   })
+
+   // ADMIN - DELETE TEMPLATE
+   router.delete("/admin/ses/templates/:id", async (req, res) => {
+      const schema = z.object({
+         id: z.string().min(1).max(100),
+      })
+      // @ts-ignore
+      const { success, error, data } = schema.safeParse(req.params)
+      if (!success) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+      }
+      const sesService = req.scope.resolve("sesService")
+      let result = await sesService.deleteTemplate(data.id)
+      return res.json({ result })
+   })
+
+   // ADMIN - CREATE TEMPLATE
+   router.use("/admin/ses/templates", json())
+   router.post("/admin/ses/templates", async (req, res) => {
+      const schema = z.object({
+         templateId: z.string().min(1),
+         subject: z.string(),
+         html: z.string(),
+         text: z.string(),
+      })
+      // @ts-ignore
+      const { success, error, data } = schema.safeParse(req.body)
+      if (!success) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+      }
+      const sesService = req.scope.resolve("sesService")
+      let template = await sesService.createTemplate(data.templateId, data.subject, data.html, data.text)
+      return res.json({ template })
+   })
+
+   // ADMIN - UPDATE TEMPLATE
+   router.use("/admin/ses/templates/:id", json())
+   router.post("/admin/ses/templates/:id", async (req, res) => {
+      const schema = z.object({
+         subject: z.string(),
+         html: z.string(),
+         text: z.string(),
+      })
+      // @ts-ignore
+      const { success, error, data } = schema.safeParse(req.body)
+      if (!success) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
+      }
+      const sesService = req.scope.resolve("sesService")
+      let template = await sesService.updateTemplate(req.params.id, data.subject, data.html, data.text)
+      return res.json({ template })
+   })
    
    // ADMIN - GET ALL ACTIVE TEMPLATES
-   router.get("/admin/ses/active-templates", async (req, res) => {   
+   router.get("/admin/ses/templates", async (req, res) => {   
       const sesService = req.scope.resolve("sesService")
-      let templates = await sesService.listActiveTemplates()
-      console.log(templates)
-      return res.json({ templates })
+      let response = await sesService.listTemplates()
+      return res.json(response)
    })
 
 

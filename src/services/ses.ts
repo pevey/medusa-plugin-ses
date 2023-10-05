@@ -243,32 +243,16 @@ class SESService extends NotificationService {
       return null
    }
 
-   async listActiveTemplates() {
-      // let templates = []
-      // exec('ls -d ' + this.templatePath_ + '/*/ | xargs -n 1 basename', (err, stdout, stderr) => {
-      //    if (err) {
-      //       console.log(err)
-      //       return
-      //    }
-      //    console.log(stdout)
-      //    //templates = stdout.split(/\r?\n/)
-      //    templates = stdout.split(' ')
-      //    console.log(templates)
-      // })
-      // return templates
-      // const files = fs.readdirSync(this.templatePath_).forEach(file => {
-      //    console.log(file)
-      // })
+   async listTemplates() {
       let templates = []
       let files = await readdir(this.templatePath_)
-console.log(files)
-      let events = files.map(file => file.replace('_', '.'))
-console.log(events)
+      let eventIds = files.map(file => file.replace('_', '.'))
       for (let file of files) {
-         const event = file.replace('_', '.')
-         if (validEvents.includes(event)) {
+         const eventId = file.replace('_', '.')
+         if (validEvents.includes(eventId)) {
             templates.push({
-               name: event,
+               templateId: file,
+               eventId: eventId,
                subject: fs.existsSync(path.join(this.templatePath_, file, 'subject.hbs')),
                html: fs.existsSync(path.join(this.templatePath_, file, 'html.hbs')),
                text: fs.existsSync(path.join(this.templatePath_, file, 'text.hbs')),
@@ -276,18 +260,44 @@ console.log(events)
             })
          }
       }
-      console.log(templates)
-      // fs.readdirSync(this.templatePath_).forEach(file => {
-      //    if (validEvents.includes(file)) {
+      const missing = validEvents.filter(event => !eventIds.includes(event))
+      return { templates, missing }
+   }
 
+   async getTemplate(templateId) {
+      const subjectTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'subject.hbs')) ?
+         fs.readFileSync(path.join(this.templatePath_, templateId, 'subject.hbs'), "utf8") : null
 
-      //       templates.push({
-      //          name: file,
-      //          path: path.join(this.templatePath_, file)
-      //       })
-      //    }
-      // })
-      return templates
+      const htmlTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'html.hbs')) ?
+         fs.readFileSync(path.join(this.templatePath_, templateId, 'html.hbs'), "utf8") : null
+
+      const textTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'text.hbs')) ?
+         fs.readFileSync(path.join(this.templatePath_, templateId, 'text.hbs'), "utf8") : null
+
+      return { 
+         subject: subjectTemplate, 
+         html: htmlTemplate, 
+         text: textTemplate
+      }
+   }
+
+   async deleteTemplate(templateId) {
+      await exec('rm ' + path.join(this.templatePath_, templateId, 'subject.hbs'))
+      await exec('rm ' + path.join(this.templatePath_, templateId, 'html.hbs'))
+      await exec('rm ' + path.join(this.templatePath_, templateId, 'text.hbs'))
+      const result = await exec('rmdir ' + path.join(this.templatePath_, templateId))
+      return result
+   }
+
+   async createTemplate({ templateId, subject, html, text }) {
+      await exec('mkdir ' + path.join(this.templatePath_, templateId))
+      await exec('touch ' + path.join(this.templatePath_, templateId, 'subject.hbs'))
+      await exec('touch ' + path.join(this.templatePath_, templateId, 'html.hbs'))
+      await exec('touch ' + path.join(this.templatePath_, templateId, 'text.hbs'))
+      await fs.writeFileSync(path.join(this.templatePath_, templateId, 'subject.hbs'), subject)
+      await fs.writeFileSync(path.join(this.templatePath_, templateId, 'html.hbs'), html)
+      await fs.writeFileSync(path.join(this.templatePath_, templateId, 'text.hbs'), text)
+      return { templateId, subject, html, text }
    }
 }
 

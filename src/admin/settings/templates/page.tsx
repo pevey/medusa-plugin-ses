@@ -1,23 +1,39 @@
-import { Table, Container, Badge, Button, DropdownMenu } from "@medusajs/ui"
-import { PlusMini, XMark, Check } from "@medusajs/icons"
-import NoSubjectTooltip from "../../components/tooltips/nosubject"
-import NoTextTooltip from "../../components/tooltips/notext"
-import NoHtmlTooltip from "../../components/tooltips/nohtml"
-import NoBodyTooltip from "../../components/tooltips/nobody"
-import ActionMenu from "../../components/actionmenu"
-import { getTemplateSummary } from "../../hooks"
+import { useState } from "react"
+import { Table, Container, Button, DropdownMenu, FocusModal, Select, useToggleState, Textarea, usePrompt } from "@medusajs/ui"
+import { PlusMini, XMark, Check, EllipsisHorizontal, PencilSquare, ComputerDesktop, Trash } from "@medusajs/icons"
+import { useSesTemplates, useSesTemplate, useSesTemplateDelete } from "../../hooks"
 import { SettingConfig } from "@medusajs/admin"
+import NoSubjectTooltip from "../../components/NoSubjectTooltip"
+import NoTextTooltip from "../../components/NoTextTooltip"
+import NoHtmlTooltip from "../../components/NoHtmlTooltip"
+import NoBodyTooltip from "../../components/NoBodyTooltip"
+import EditTemplateModal from "../../components/EditTemplateModal"
 
 const TemplateSettingsPage = () => {
    "use client"
-   const response = getTemplateSummary()
-console.log(response)
-   const handleSelect = (event: Event) => {
+   const response = useSesTemplates()
 
+   const [editOpen, showEdit, closeEdit] = useToggleState()
+   const [activeTemplateId, setActiveTemplate] = useState<string>()
+   const editTemplate = (value) => {
+      setActiveTemplate(value)
+      showEdit()
+   }
+
+   const dialog = usePrompt()
+   async function deleteTemplate(templateId) {
+      const userHasConfirmed = await dialog({
+         title: "Delete Template",
+         description: "Are you sure you want to completely delete this template?",
+       })
+       if (userHasConfirmed) {
+         useSesTemplateDelete(templateId)
+       }
    }
 
    return (
       <Container className="mb-4">
+         <EditTemplateModal editOpen={editOpen} closeEdit={closeEdit} activeTemplateId={activeTemplateId} />
          <div className="flex items-start justify-between mb-6">
             <div>
                <h1 className="inter-xlarge-semibold text-grey-90">Email Templates</h1>
@@ -26,7 +42,54 @@ console.log(response)
                </h3>
             </div>
             <div className="flex items-center space-x-2">
-              <Button variant="secondary"><PlusMini /> Add Notification</Button>
+              {/* <FocusModal>
+                  <FocusModal.Trigger>
+                     <Button variant="secondary"><PlusMini /> Add Notification</Button>
+                  </FocusModal.Trigger>
+                  <FocusModal.Content className="w-64">
+                     <FocusModal.Header>Title</FocusModal.Header>
+                     <FocusModal.Body>Content</FocusModal.Body>
+                  </FocusModal.Content>
+               </FocusModal>
+               <DropdownMenu>
+                  <DropdownMenu.Trigger asChild>
+                     <Button variant="secondary"><PlusMini /> Add Template</Button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content align="end">
+                     <DropdownMenu.Item className="gap-x-2">
+                        <div className="flex flex-nowrap">
+                           <PlusMini className="text-ui-fg-subtle mr-2" />Create New Template
+                        </div>
+                     </DropdownMenu.Item>
+                     <DropdownMenu.Item className="gap-x-2">
+                        <div className="flex flex-nowrap">
+                           <PlusMini className="text-ui-fg-subtle mr-2" />Create Template from Existing
+                        </div>
+                     </DropdownMenu.Item>
+                     <DropdownMenu.Item>
+                        <Select>
+                           <Select.Trigger>
+                              trigger
+                           </Select.Trigger>
+                           <Select.Content>
+                              <Select.Item key="key" value="value">option</Select.Item>
+                           </Select.Content>
+                        </Select>
+                     </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+               </DropdownMenu> */}
+               <Select onValueChange={editTemplate}>
+                  <Select.Trigger>
+                     <PlusMini /> Add Template &nbsp;
+                  </Select.Trigger>
+                  <Select.Content align="end">
+                  {!response.isLoading && response.data.missing?.map((template) => {
+                     return (
+                        <Select.Item key={template} value={template}>{template}</Select.Item>
+                     )
+                  })}
+                  </Select.Content>
+               </Select>
             </div>
           </div>
          <Table>
@@ -42,8 +105,8 @@ console.log(response)
             <Table.Body>
             {!response.isLoading && response.data.templates?.map((template) => {
                return (
-                  <Table.Row key={template.name} className="[&_td:last-child]:w-[1%] [&_td:last-child]:whitespace-nowrap pr-0 mr-0">
-                     <Table.Cell>{template.name}</Table.Cell>
+                  <Table.Row key={template.eventId} className="[&_td:last-child]:w-[1%] [&_td:last-child]:whitespace-nowrap pr-0 mr-0">
+                     <Table.Cell>{template.eventId}</Table.Cell>
                      <Table.Cell>
                         {template.subject && <Check className="text-emerald-600 mx-auto" />}
                         {!template.subject && <NoSubjectTooltip><XMark className="text-rose-700 mx-auto" /></NoSubjectTooltip>}
@@ -59,43 +122,37 @@ console.log(response)
                         {!template.html && !template.text && <NoBodyTooltip><XMark className="text-rose-700 mx-auto" /></NoBodyTooltip>}
                         </Table.Cell>
                      <Table.Cell className="text-right mr-0 pr-0">
-                        <ActionMenu />
+                        <DropdownMenu>
+                           <DropdownMenu.Trigger asChild>
+                              <button>
+                                 <EllipsisHorizontal />
+                              </button>
+                           </DropdownMenu.Trigger>
+                           <DropdownMenu.Content align="end">
+                              <DropdownMenu.Item className="gap-x-2">
+                                 <button className="flex flex-nowrap">
+                                    <ComputerDesktop className="text-ui-fg-subtle mr-2" />Preview
+                                 </button>
+                              </DropdownMenu.Item>
+                              <DropdownMenu.Item className="gap-x-2">
+                                 <button onClick={async() => editTemplate(template.templateId)} className="flex flex-nowrap">
+                                    <PencilSquare className="text-ui-fg-subtle mr-2" />Edit
+                                 </button>
+                              </DropdownMenu.Item>
+                              <DropdownMenu.Separator />
+                              <DropdownMenu.Item className="gap-x-2 text-rose-700">
+                                 <button onClick={async () => deleteTemplate(template.templateId)} className="flex flex-nowrap">
+                                    <Trash className="text-rose-700 text-ui-fg-subtle mr-2" />Delete
+                                 </button>
+                              </DropdownMenu.Item>
+                           </DropdownMenu.Content>
+                        </DropdownMenu>
                      </Table.Cell>
                   </Table.Row>
                )
             })}
             </Table.Body>
          </Table>
-         <div className="flex gap-2">
-            {/* {!response.isLoading &&
-               response.data.summary?.map((reaction) => (
-                  <ReactionBadge
-                     key={reaction.reaction}
-                     orderId={order.id}
-                     reaction={reaction.reaction}
-                     count={reaction.count}
-                     userHasReacted={reaction.user_has_reacted}
-                     userReactionId={reaction.user_reaction_id}
-                  />
-            ))} */}
-            <DropdownMenu>
-               <DropdownMenu.Trigger>
-                  <Button variant="transparent">
-                     {/* <FaceSmile /> */}
-                  </Button>
-               </DropdownMenu.Trigger>
-               <DropdownMenu.Content className="flex">
-                  <DropdownMenu.Item onSelect={handleSelect}>👍</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>💰</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>😍</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>🎉</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>🚀</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>🛑</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>👎</DropdownMenu.Item>
-                  <DropdownMenu.Item onSelect={handleSelect}>😭</DropdownMenu.Item>
-               </DropdownMenu.Content>
-            </DropdownMenu>
-         </div>
       </Container>
    )
 }
@@ -106,5 +163,5 @@ export const config: SettingConfig = {
    card: {
       label: "Email Templates",
       description: "Manage some custom settings",
-   },
+   }
 }
