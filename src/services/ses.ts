@@ -47,12 +47,12 @@ class SESService extends NotificationService {
 
       this.templatePath_ = (this.options_.template_path.startsWith('/')) ?
          path.resolve(this.options_.template_path) : // The path given in options is absolute
-         path.join(__dirname, '../../..', this.options_.template_path) // The path given in options is relative
+         path.join(__dirname, '../../../..', this.options_.template_path) // The path given in options is relative
          
       if (this.options_.partial_path) {
          this.partialPath_ = (this.options_.partial_path.startsWith('/')) ?
             path.resolve(this.options_.partial_path) : // The path given in options is absolute
-            path.join(__dirname, '../../..', this.options_.partial_path) // The path given in options is relative
+            path.join(__dirname, '../../../..', this.options_.partial_path) // The path given in options is relative
          fs.readdirSync(this.partialPath_).forEach(filename => {
             if (filename.endsWith('.hbs')) {
                const name = path.parse(filename).name

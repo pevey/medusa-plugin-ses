@@ -35,7 +35,7 @@ const TemplateEditor = function({
             </FocusModal.Header>
             <FocusModal.Body className="m-4 overflow-y-auto">
                <Heading level="h1" className="text-center">{activeTemplateId}</Heading>
-               <CodeMirror value={activeTemplate?.html} height="auto" onChange={(val) => onChange(val)} theme={oneDark} className="text-[1rem]" />
+               <CodeMirror value={activeTemplate?.html || ''} height="auto" onChange={(val) => onChange(val)} theme={oneDark} className="text-[1rem]" />
             </FocusModal.Body>
          </FocusModal.Content>
       </FocusModal>
