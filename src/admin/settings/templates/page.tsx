@@ -1,13 +1,14 @@
 import { useState } from "react"
-import { Heading, Tabs, Table, Container, Button, DropdownMenu, FocusModal, Select, useToggleState, Textarea, usePrompt } from "@medusajs/ui"
-import { PlusMini, XMark, Check, EllipsisHorizontal, PencilSquare, ComputerDesktop, Trash } from "@medusajs/icons"
+import { Heading, Input, Label, Tabs, Table, Container, Button, IconButton, DropdownMenu, FocusModal, Select, useToggleState, usePrompt } from "@medusajs/ui"
+import { PlusMini, XMark, Check, EllipsisHorizontal, PencilSquare, ComputerDesktop, Trash, CommandLine, BookOpen, Eye  } from "@medusajs/icons"
 import { SettingConfig } from "@medusajs/admin"
+import CodeMirror, { oneDark } from '@uiw/react-codemirror'
 import { useSesTemplates, useSesTemplate, useSesTemplateDelete } from "../../hooks"
 import NoSubjectTooltip from "../../components/NoSubjectTooltip"
 import NoTextTooltip from "../../components/NoTextTooltip"
 import NoHtmlTooltip from "../../components/NoHtmlTooltip"
 import NoBodyTooltip from "../../components/NoBodyTooltip"
-import CodeMirror, { oneDark } from '@uiw/react-codemirror'
+import defaultTemplates from "../../../constants/defaultTemplates"
 
 const TemplateEditor = function({ 
    editOpen,
@@ -17,6 +18,11 @@ const TemplateEditor = function({
    "use client"
    const response = useSesTemplate(activeTemplateId)
    const activeTemplate = response?.data?.template
+   const initialSubject = activeTemplate?.subject || defaultTemplates[activeTemplateId]?.subject || defaultTemplates['fallback']?.subject
+   const initialValue = activeTemplate?.mjml || defaultTemplates[activeTemplateId]?.mjml || defaultTemplates['fallback']?.mjml
+   if (activeTemplate?.html && !activeTemplate?.mjml) {
+      // warning
+   }
 
    const onChange = function(val) {
       console.log(val)
@@ -35,13 +41,23 @@ const TemplateEditor = function({
          <FocusModal.Content>
             <FocusModal.Header className="flex items-end">
                <div>
-                  <Button onClick={closeEdit} variant="secondary">Cancel</Button>
+                  <Button onClick={closeEdit} variant="secondary">Discard</Button>
                   <Button onClick={saveEdit} className="ml-2">Save</Button>
                </div>
             </FocusModal.Header>
-            <FocusModal.Body className="m-4 overflow-y-auto">
+            <FocusModal.Body className="p-4 overflow-y-auto">
                <Heading level="h1" className="text-center">{activeTemplateId}</Heading>
-               <CodeMirror value={activeTemplate?.html || ''} height="auto" onChange={(val) => onChange(val)} theme={oneDark} className="text-[1rem]" />
+               <div className="flex px-1 items-end">                     
+                  <div className="flex-grow py-6">
+                     <Label className="mt-4" weight="plus" htmlFor="subject">Subject</Label>
+                     <Input name="subject" value={initialSubject} />
+                  </div>
+                  <div className="py-6 pl-2 ml-auto">
+                     <IconButton size="large"><Eye /></IconButton>
+                     <IconButton size="large" className="ml-2"><BookOpen /></IconButton>
+                  </div>
+               </div>
+               <CodeMirror value={initialValue} height="auto" onChange={(val) => onChange(val)} theme={oneDark} className="text-[1rem] rounded-lg overflow-hidden" />
             </FocusModal.Body>
          </FocusModal.Content>
       </FocusModal>
@@ -75,10 +91,10 @@ const TemplateSettingsPage = function() {
          <TemplateEditor editOpen={editOpen} closeEdit={closeEdit} activeTemplateId={activeTemplateId} />
          <div className="flex items-start justify-between mb-6">
             <div>
-               <h1 className="inter-xlarge-semibold text-grey-90">Email Templates</h1>
-               <h3 className="inter-small-regular text-grey-50 pt-1.5">
+               <Heading level="h1">Email Templates</Heading>
+               <Heading level="h3" className="text-grey-50 pt-1.5">
                   Manage your email templates
-               </h3>
+               </Heading>
             </div>
             <div className="flex items-center space-x-2">
               {/* <DropdownMenu>
@@ -182,6 +198,6 @@ export default TemplateSettingsPage
 export const config: SettingConfig = {
    card: {
       label: "Email Templates",
-      description: "Manage some custom settings",
+      description: "Manage email templates for notifications",
    }
 }
