@@ -1,22 +1,57 @@
 import { useState } from "react"
-import { Table, Container, Button, DropdownMenu, FocusModal, Select, useToggleState, Textarea, usePrompt } from "@medusajs/ui"
+import { Heading, Tabs, Table, Container, Button, DropdownMenu, FocusModal, Select, useToggleState, Textarea, usePrompt } from "@medusajs/ui"
 import { PlusMini, XMark, Check, EllipsisHorizontal, PencilSquare, ComputerDesktop, Trash } from "@medusajs/icons"
-import { useSesTemplates, useSesTemplate, useSesTemplateDelete } from "../../hooks"
 import { SettingConfig } from "@medusajs/admin"
+import { useSesTemplates, useSesTemplate, useSesTemplateDelete } from "../../hooks"
 import NoSubjectTooltip from "../../components/NoSubjectTooltip"
 import NoTextTooltip from "../../components/NoTextTooltip"
 import NoHtmlTooltip from "../../components/NoHtmlTooltip"
 import NoBodyTooltip from "../../components/NoBodyTooltip"
-import EditTemplateModal from "../../components/EditTemplateModal"
+import CodeMirror, { oneDark } from '@uiw/react-codemirror'
 
-const TemplateSettingsPage = () => {
+const TemplateEditor = function({ 
+   editOpen,
+   closeEdit,
+   activeTemplateId
+}) {
+   "use client"
+   const response = useSesTemplate(activeTemplateId)
+   const activeTemplate = response?.data?.template
+
+   const onChange = function(val) {
+      console.log(val)
+   }
+
+   return (
+      <FocusModal open={editOpen} onOpenChange={(modalOpened) => {
+         if (!modalOpened) {
+            closeEdit()
+         }
+      }}>
+         <FocusModal.Content>
+            <FocusModal.Header>
+               <Button variant="secondary">Cancel</Button>
+               <Button className="ml-2">Save</Button>
+            </FocusModal.Header>
+            <FocusModal.Body className="m-4 overflow-y-auto">
+               <Heading level="h1" className="text-center">{activeTemplateId}</Heading>
+               <CodeMirror value={activeTemplate?.html} height="auto" onChange={(val) => onChange(val)} theme={oneDark} className="text-[1rem]" />
+            </FocusModal.Body>
+         </FocusModal.Content>
+      </FocusModal>
+   )
+}
+
+const TemplateSettingsPage = function() {
    "use client"
    const response = useSesTemplates()
 
    const [editOpen, showEdit, closeEdit] = useToggleState()
    const [activeTemplateId, setActiveTemplate] = useState<string>()
    const editTemplate = (value) => {
+      console.log(activeTemplateId)
       setActiveTemplate(value)
+      console.log(activeTemplateId)
       showEdit()
    }
 
@@ -33,7 +68,7 @@ const TemplateSettingsPage = () => {
 
    return (
       <Container className="mb-4">
-         <EditTemplateModal editOpen={editOpen} closeEdit={closeEdit} activeTemplateId={activeTemplateId} />
+         <TemplateEditor editOpen={editOpen} closeEdit={closeEdit} activeTemplateId={activeTemplateId} />
          <div className="flex items-start justify-between mb-6">
             <div>
                <h1 className="inter-xlarge-semibold text-grey-90">Email Templates</h1>
@@ -42,16 +77,7 @@ const TemplateSettingsPage = () => {
                </h3>
             </div>
             <div className="flex items-center space-x-2">
-              {/* <FocusModal>
-                  <FocusModal.Trigger>
-                     <Button variant="secondary"><PlusMini /> Add Notification</Button>
-                  </FocusModal.Trigger>
-                  <FocusModal.Content className="w-64">
-                     <FocusModal.Header>Title</FocusModal.Header>
-                     <FocusModal.Body>Content</FocusModal.Body>
-                  </FocusModal.Content>
-               </FocusModal>
-               <DropdownMenu>
+              {/* <DropdownMenu>
                   <DropdownMenu.Trigger asChild>
                      <Button variant="secondary"><PlusMini /> Add Template</Button>
                   </DropdownMenu.Trigger>
@@ -65,16 +91,6 @@ const TemplateSettingsPage = () => {
                         <div className="flex flex-nowrap">
                            <PlusMini className="text-ui-fg-subtle mr-2" />Create Template from Existing
                         </div>
-                     </DropdownMenu.Item>
-                     <DropdownMenu.Item>
-                        <Select>
-                           <Select.Trigger>
-                              trigger
-                           </Select.Trigger>
-                           <Select.Content>
-                              <Select.Item key="key" value="value">option</Select.Item>
-                           </Select.Content>
-                        </Select>
                      </DropdownMenu.Item>
                   </DropdownMenu.Content>
                </DropdownMenu> */}

@@ -1,7 +1,7 @@
 import { useAdminCustomQuery, useAdminCustomPost, useAdminCustomDelete } from "medusa-react"
 
-export const useSesTemplate = (id: string) => {
-   if (!id) return {}
+export const useSesTemplate = function(id: string) {
+   // if (!id) return {} // this causes problems!!
    return useAdminCustomQuery (`/admin/ses/templates/${id}`, ["ses", id])
 }
 

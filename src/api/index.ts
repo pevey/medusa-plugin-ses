@@ -25,7 +25,7 @@ export default (rootDirectory: string): Router | Router[] => {
          id: z.string().min(1).max(100),
       })
       // @ts-ignore
-      const { success, error, data } = schema.safeParse(req.params)
+      const { success, error, data } = schema.safeParse({ id: req.params.id })
       if (!success) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
       }
@@ -36,13 +36,13 @@ export default (rootDirectory: string): Router | Router[] => {
       res.send(Buffer.from(template.html))
    })
 
-   // ADMIN - GET TEMPLATE DETAILS
+   // ADMIN - GET TEMPLATE
    router.get("/admin/ses/templates/:id", async (req, res) => {
       const schema = z.object({
          id: z.string().min(1).max(100),
       })
       // @ts-ignore
-      const { success, error, data } = schema.safeParse(req.params)
+      const { success, error, data } = schema.safeParse({ id: req.params.id })
       if (!success) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
       }
@@ -57,7 +57,7 @@ export default (rootDirectory: string): Router | Router[] => {
          id: z.string().min(1).max(100),
       })
       // @ts-ignore
-      const { success, error, data } = schema.safeParse(req.params)
+      const { success, error, data } = schema.safeParse({ id: req.params.id })
       if (!success) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
       }
@@ -89,12 +89,13 @@ export default (rootDirectory: string): Router | Router[] => {
    router.use("/admin/ses/templates/:id", json())
    router.post("/admin/ses/templates/:id", async (req, res) => {
       const schema = z.object({
+         templateId: z.string().min(1),
          subject: z.string(),
          html: z.string(),
          text: z.string(),
       })
       // @ts-ignore
-      const { success, error, data } = schema.safeParse(req.body)
+      const { success, error, data } = schema.safeParse({...req.body, templateId: req.params.id })
       if (!success) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, error)
       }

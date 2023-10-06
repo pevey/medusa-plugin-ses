@@ -290,6 +290,7 @@ class SESService extends NotificationService {
    }
 
    async createTemplate({ templateId, subject, html, text }) {
+      // check if in valid events
       await exec('mkdir ' + path.join(this.templatePath_, templateId))
       await exec('touch ' + path.join(this.templatePath_, templateId, 'subject.hbs'))
       await exec('touch ' + path.join(this.templatePath_, templateId, 'html.hbs'))

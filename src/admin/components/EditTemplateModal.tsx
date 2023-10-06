@@ -1,7 +1,9 @@
+import { useState, useCallback } from 'react'
 import { Heading, Button, FocusModal, Textarea, Tabs, usePrompt } from "@medusajs/ui"
 import { PlusMini, XMark, Check, EllipsisHorizontal, PencilSquare, ComputerDesktop, Trash } from "@medusajs/icons"
 import { useSesTemplate, useSesTemplateUpdate } from "../hooks"
 import CodeEditor from "./CodeEditor"
+import CodeMirror, { oneDark } from '@uiw/react-codemirror'
 
 const EditTemplateModal = ({
    editOpen,
@@ -10,6 +12,12 @@ const EditTemplateModal = ({
 }) => {
    const response: any = useSesTemplate(activeTemplateId)
    const activeTemplate = response?.data?.template
+
+   const [value, setValue] = useState("console.log('hello world!')")
+   const onChange = useCallback((val, viewUpdate) => {
+      console.log('val:', val);
+      setValue(val);
+   }, [])
 
    async function saveTemplate(event) {
       event.preventDefault()
@@ -33,7 +41,7 @@ const EditTemplateModal = ({
             </FocusModal.Header>
             <FocusModal.Body className="m-4 overflow-y-auto">
                <Heading level="h1" className="text-center">{activeTemplateId}</Heading>
-               <CodeEditor />            
+               <CodeMirror value={value} height="auto" onChange={onChange} theme={oneDark} className="text-[1rem]" />
                <Tabs defaultValue="subject">
                   <Tabs.List className="my-4">
                      <Tabs.Trigger value="subject">Subject</Tabs.Trigger>
