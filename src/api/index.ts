@@ -31,7 +31,6 @@ export default (rootDirectory: string): Router | Router[] => {
       }
       const sesService = req.scope.resolve("sesService")
       let template = await sesService.getTemplate(data.id)
-      console.log(template)
       res.set('Content-Type', 'text/html')
       res.send(Buffer.from(template.html))
    })

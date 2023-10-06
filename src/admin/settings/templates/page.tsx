@@ -22,6 +22,10 @@ const TemplateEditor = function({
       console.log(val)
    }
 
+   const saveEdit = function() {
+      console.log('save')
+   }
+
    return (
       <FocusModal open={editOpen} onOpenChange={(modalOpened) => {
          if (!modalOpened) {
@@ -29,9 +33,11 @@ const TemplateEditor = function({
          }
       }}>
          <FocusModal.Content>
-            <FocusModal.Header>
-               <Button variant="secondary">Cancel</Button>
-               <Button className="ml-2">Save</Button>
+            <FocusModal.Header className="flex items-end">
+               <div>
+                  <Button onClick={closeEdit} variant="secondary">Cancel</Button>
+                  <Button onClick={saveEdit} className="ml-2">Save</Button>
+               </div>
             </FocusModal.Header>
             <FocusModal.Body className="m-4 overflow-y-auto">
                <Heading level="h1" className="text-center">{activeTemplateId}</Heading>
@@ -49,9 +55,7 @@ const TemplateSettingsPage = function() {
    const [editOpen, showEdit, closeEdit] = useToggleState()
    const [activeTemplateId, setActiveTemplate] = useState<string>()
    const editTemplate = (value) => {
-      console.log(activeTemplateId)
       setActiveTemplate(value)
-      console.log(activeTemplateId)
       showEdit()
    }
 

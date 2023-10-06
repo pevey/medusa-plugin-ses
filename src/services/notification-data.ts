@@ -88,7 +88,6 @@ class NotificationDataService extends TransactionBaseService {
          case "swap":
             return await this.getSwapData(event, data, attachmentGenerator)
          case "user":
-            console.log(this.getUserData(event, data, attachmentGenerator))
             return this.getUserData(event, data, attachmentGenerator)
          default:
             return {}
